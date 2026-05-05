@@ -31,7 +31,7 @@ GNEWS_API_KEY = os.getenv("GNEWS_API_KEY")
 GOV_API_KEY = os.getenv("GOV_API_KEY")
 GOV_ENDPOINT = os.getenv("GOV_ENDPOINT")
 
-# 구글 시트 연동
+# 구글 시트 연동을 위한 환경 변수 (GitHub Secrets에서 가져옴)
 GOOGLE_SHEETS_JSON = os.getenv("GOOGLE_SHEETS_JSON")
 SHEET_ID = os.getenv("SHEET_ID")
 
@@ -460,7 +460,7 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
     summary = await summarize_topic_async(topic_name, fresh_articles)
     links_section = "\n원문\n" + "\n".join([f"{i}. {html.escape(a['short_title'])}\n{a['url']}\n" for i, a in enumerate(fresh_articles[:4], 1)])
     
-    # 텔레그램용 KST 시간 포맷
+    # 텔레그램용 KST 시간 포맷 (핵심 시공간 마법!)
     kst = timezone(timedelta(hours=9))
     now_kst = datetime.now(kst).strftime("%m-%d %H:%M")
     
