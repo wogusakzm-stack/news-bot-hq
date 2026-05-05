@@ -52,7 +52,17 @@ ARTICLES_PER_TOPIC = 4
 TELEGRAM_SAFE_LIMIT = 3200
 SIMILARITY_THRESHOLD = 0.84
 HTTP_TIMEOUT_SECONDS = 12
-HTTP_CONCURRENCY = 5
+HTTP_CONCURRENCY = 3
+
+# API 과호출 방지 설정
+# - Naver는 전 분야 기본 수집원으로 쓰되, 키워드 수를 제한해 429를 줄인다.
+# - GNews는 무료 한도가 낮으므로 세계/IT 핵심 키워드에만 쓴다.
+# - 정책브리핑은 서버 500이 잦을 수 있어 경제/정치/사회 핵심 키워드에만 쓴다.
+NAVER_KEYWORD_LIMIT = 10
+GNEWS_TOPICS = {"세계", "IT·과학"}
+GNEWS_KEYWORD_LIMIT = 2
+POLICY_TOPICS = {"경제", "정치", "사회·생활문화"}
+POLICY_KEYWORD_LIMIT = 2
 
 GLOBAL_BLOCKED_DOMAINS = {
     "breaknews.com", "lecturernews.com", "tongilnews.com",
@@ -403,13 +413,21 @@ def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]) ->
         sh = gc.open_by_key(SHEET_ID)
         worksheet = sh.get_worksheet(0)
 
+        if worksheet is None:
+            raise RuntimeError("구글시트 첫 번째 워크시트를 찾지 못했습니다.")
+
+        logger.info(f"[{topic_name}] 시트 대상 확인 | spreadsheet={sh.title}, worksheet={worksheet.title}")
+
         now_str = fmt_kst("%Y-%m-%d %H:%M:%S")
         titles = " | ".join([a.get("title", "") for a in articles])
         urls = " | ".join([a.get("url", "") for a in articles])
         sources = " | ".join([source_label(a) for a in articles])
 
-        # 기존 4열 구조를 크게 깨지 않으면서, 뒤쪽에 URL/출처를 보강한다.
-        worksheet.append_row([now_str, topic_name, summary, titles, urls, sources])
+        # 저장 열: 시각 | 분야 | 요약 | 기사제목들 | URL들 | 출처들
+        worksheet.append_row(
+            [now_str, topic_name, summary, titles, urls, sources],
+            value_input_option="USER_ENTERED",
+        )
         logger.info(f"[{topic_name}] 구글 시트 저장 완료! (๑>ᴗ<๑)")
 
     except Exception as e:
@@ -479,22 +497,37 @@ async def fetch_json(
     url: str,
     headers: Optional[dict] = None,
     params: Optional[dict] = None,
+    retries: int = 1,
 ) -> Any:
-    try:
-        async with session.get(url, headers=headers, params=params, timeout=HTTP_TIMEOUT_SECONDS) as response:
-            if response.status == 200:
-                return await response.json(content_type=None)
+    for attempt in range(retries + 1):
+        try:
+            async with session.get(url, headers=headers, params=params, timeout=HTTP_TIMEOUT_SECONDS) as response:
+                if response.status == 200:
+                    return await response.json(content_type=None)
 
-            body = await response.text()
-            logger.warning(f"HTTP {response.status} | {url} | {body[:240]}")
+                body = await response.text()
+                logger.warning(f"HTTP {response.status} | {url} | {body[:240]}")
+
+                if response.status in {429, 500, 502, 503, 504} and attempt < retries:
+                    await asyncio.sleep(1.5 + attempt)
+                    continue
+
+                return None
+
+        except asyncio.TimeoutError:
+            logger.warning(f"요청 시간 초과 | {url}")
+            if attempt < retries:
+                await asyncio.sleep(1.5 + attempt)
+                continue
+            return None
+        except Exception as e:
+            logger.warning(f"요청 실패 | {url} | {e}")
+            if attempt < retries:
+                await asyncio.sleep(1.5 + attempt)
+                continue
             return None
 
-    except asyncio.TimeoutError:
-        logger.warning(f"요청 시간 초과 | {url}")
-        return None
-    except Exception as e:
-        logger.warning(f"요청 실패 | {url} | {e}")
-        return None
+    return None
 
 
 async def fetch_naver_news_async(
@@ -510,7 +543,7 @@ async def fetch_naver_news_async(
         }
         params = {"query": query, "display": PER_KEYWORD_DISPLAY, "sort": "date"}
 
-        data = await fetch_json(session, url, headers=headers, params=params)
+        data = await fetch_json(session, url, headers=headers, params=params, retries=1)
         items = []
 
         if not data:
@@ -575,7 +608,7 @@ async def fetch_gnews_async(
             "sortby": "publishedAt",
         }
 
-        data = await fetch_json(session, url, params=params)
+        data = await fetch_json(session, url, params=params, retries=0)
         items = []
 
         if not data:
@@ -640,11 +673,11 @@ async def fetch_policy_briefing_async(
             "serviceKey": GOV_API_KEY,
             "searchWrd": query,
             "returnType": "json",
-            "numOfRows": 10,
+            "numOfRows": 5,
             "pageNo": 1,
         }
 
-        data = await fetch_json(session, GOV_ENDPOINT, params=params)
+        data = await fetch_json(session, GOV_ENDPOINT, params=params, retries=0)
         items = []
 
         if not data:
@@ -745,7 +778,7 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
         score += 12
 
     if article.get("source") == "GNews":
-        score += 9 if topic_name in {"세계", "IT·과학"} else 4
+        score += 9 if topic_name in GNEWS_TOPICS else 4
 
     matched_query = normalize_text(article.get("matched_query", ""))
     if matched_query:
@@ -1021,10 +1054,15 @@ async def collect_topic_candidates(
     logger.info(f"[{topic_name}] 수집 시작")
 
     tasks = []
-    for q in cfg["search_keywords"]:
-        tasks.append(fetch_naver_news_async(session, q, semaphore))
-        tasks.append(fetch_gnews_async(session, q, semaphore))
-        tasks.append(fetch_policy_briefing_async(session, q, semaphore))
+    for idx, q in enumerate(cfg["search_keywords"]):
+        if idx < NAVER_KEYWORD_LIMIT:
+            tasks.append(fetch_naver_news_async(session, q, semaphore))
+
+        if topic_name in GNEWS_TOPICS and idx < GNEWS_KEYWORD_LIMIT:
+            tasks.append(fetch_gnews_async(session, q, semaphore))
+
+        if topic_name in POLICY_TOPICS and idx < POLICY_KEYWORD_LIMIT:
+            tasks.append(fetch_policy_briefing_async(session, q, semaphore))
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
