@@ -73,37 +73,89 @@ TRUSTED_DOMAIN_SCORES = {
 
 TOPIC_CONFIGS = {
     "경제": {
-        "search_keywords": ["증시", "환율", "금리", "물가", "부동산", "고용", "수출", "한국은행", "연준", "원달러", "stock market", "interest rate"],
-        "positive_keywords": ["코스피", "코스닥", "국채", "채권", "집값", "분양", "인플레이션", "경기침체", "경상수지", "환율", "기준금리", "부동산", "수출", "고용"],
-        "negative_keywords": ["대선", "총선", "국회", "대통령실", "여야", "외교", "도핑", "선수", "강연", "특강", "교수", "포럼", "전시", "공연", "수목원"],
+        "search_keywords": [
+            "증시", "환율", "금리", "물가", "부동산", "고용", "수출",
+            "한국은행", "연준", "원달러", "stock market", "interest rate",
+        ],
+        "positive_keywords": [
+            "코스피", "코스닥", "국채", "채권", "집값", "분양", "인플레이션",
+            "경기침체", "경상수지", "환율", "기준금리", "부동산", "수출", "고용",
+        ],
+        "negative_keywords": [
+            "대선", "총선", "국회", "대통령실", "여야", "외교", "도핑",
+            "선수", "강연", "특강", "교수", "포럼", "전시", "공연", "수목원",
+        ],
         "blocked_domains": set(),
         "min_score": 7,
     },
     "정치": {
-        "search_keywords": ["국회", "대통령실", "여야", "정당", "총리", "장관", "대선", "총선", "정치권", "청문회"],
-        "positive_keywords": ["법안", "의결", "개각", "지지율", "당대표", "원내대표", "선거", "공천", "외교안보", "정부", "대통령", "국회", "정당"],
-        "negative_keywords": ["증시", "환율", "금리", "물가", "부동산", "비트코인", "도핑", "선수", "강연", "특강", "교수", "미디어학부", "수목원", "공연", "전시", "스마트팩토리"],
+        "search_keywords": [
+            "국회", "대통령실", "여야", "정당", "총리", "장관",
+            "대선", "총선", "정치권", "청문회",
+        ],
+        "positive_keywords": [
+            "법안", "의결", "개각", "지지율", "당대표", "원내대표", "선거",
+            "공천", "외교안보", "정부", "대통령", "국회", "정당",
+        ],
+        "negative_keywords": [
+            "증시", "환율", "금리", "물가", "부동산", "비트코인", "도핑",
+            "선수", "강연", "특강", "교수", "미디어학부", "수목원", "공연",
+            "전시", "스마트팩토리",
+        ],
         "blocked_domains": set(),
         "min_score": 7,
     },
     "사회·생활문화": {
-        "search_keywords": ["사건", "법원", "검찰", "경찰", "교육", "건강", "복지", "육아", "생활문화", "전시", "공연"],
-        "positive_keywords": ["사고", "판결", "기소", "수사", "병원", "보건", "양육", "문화", "도서관", "축제", "교육", "복지", "생활"],
-        "negative_keywords": ["증시", "환율", "금리", "물가", "부동산", "비트코인", "연준", "대선", "총선", "대통령실", "외교", "제재", "AI 모델", "오픈AI", "엔비디아", "러시아산 원유", "도핑", "선수"],
+        "search_keywords": [
+            "사건", "사고", "법원", "검찰", "경찰", "교육", "건강",
+            "복지", "육아", "생활문화", "노동", "산재", "재난", "화재",
+            "교통사고", "보건",
+        ],
+        "positive_keywords": [
+            "사고", "판결", "기소", "수사", "병원", "보건", "양육",
+            "문화", "도서관", "축제", "교육", "복지", "생활", "노동",
+            "산재", "재난", "화재",
+        ],
+        "negative_keywords": [
+            "증시", "환율", "금리", "물가", "부동산", "비트코인", "연준",
+            "대선", "총선", "대통령실", "외교", "제재", "AI 모델", "오픈AI",
+            "엔비디아", "러시아산 원유", "도핑", "선수",
+        ],
         "blocked_domains": set(),
         "min_score": 7,
     },
     "세계": {
-        "search_keywords": ["국제", "미국", "중국", "일본", "유럽", "중동", "우크라이나", "러시아", "EU", "대만", "international news", "world politics"],
-        "positive_keywords": ["백악관", "중동", "휴전", "제재", "정상회담", "외신", "나토", "가자", "이스라엘", "트럼프", "바이든", "국제", "전쟁", "외교"],
-        "negative_keywords": ["증시", "환율", "금리", "물가", "부동산", "비트코인", "주가", "휘발윳값", "도핑", "선수", "윔블던", "야구", "축구", "농구", "강연", "특강", "교수", "수목원", "공연", "전시"],
+        "search_keywords": [
+            "국제", "미국", "중국", "일본", "유럽", "중동", "우크라이나",
+            "러시아", "EU", "대만", "international news", "world politics",
+        ],
+        "positive_keywords": [
+            "백악관", "중동", "휴전", "제재", "정상회담", "외신", "나토",
+            "가자", "이스라엘", "트럼프", "바이든", "국제", "전쟁", "외교",
+        ],
+        "negative_keywords": [
+            "증시", "환율", "금리", "물가", "부동산", "비트코인", "주가",
+            "휘발윳값", "도핑", "선수", "윔블던", "야구", "축구", "농구",
+            "강연", "특강", "교수", "수목원", "공연", "전시",
+        ],
         "blocked_domains": set(),
         "min_score": 8,
     },
     "IT·과학": {
-        "search_keywords": ["AI", "인공지능", "반도체", "오픈AI", "엔비디아", "로봇", "양자", "우주", "테크", "스마트팩토리", "artificial intelligence", "semiconductor"],
-        "positive_keywords": ["챗GPT", "LLM", "GPU", "파운드리", "삼성전자", "SK하이닉스", "자율주행", "생성형 AI", "모델", "데이터센터", "로보틱스", "반도체", "과학", "우주"],
-        "negative_keywords": ["총선", "대선", "국회", "여야", "외교", "도핑", "선수", "수목원", "전시", "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치"],
+        "search_keywords": [
+            "AI", "인공지능", "반도체", "오픈AI", "엔비디아", "로봇",
+            "양자", "우주", "테크", "스마트팩토리",
+            "artificial intelligence", "semiconductor",
+        ],
+        "positive_keywords": [
+            "챗GPT", "LLM", "GPU", "파운드리", "삼성전자", "SK하이닉스",
+            "자율주행", "생성형 AI", "모델", "데이터센터", "로보틱스",
+            "반도체", "과학", "우주",
+        ],
+        "negative_keywords": [
+            "총선", "대선", "국회", "여야", "외교", "도핑", "선수", "수목원",
+            "전시", "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치",
+        ],
         "blocked_domains": set(),
         "min_score": 8,
     },
@@ -185,6 +237,30 @@ def strip_html(text: str) -> str:
     return BeautifulSoup(text or "", "html.parser").get_text(" ", strip=True)
 
 
+def compact_text(text: str, limit: int = 900) -> str:
+    text = strip_html(text or "")
+    text = re.sub(r"\s+", " ", text).strip()
+    return text if len(text) <= limit else text[:limit].rstrip() + "…"
+
+
+def first_value(data: dict, keys: list[str], default: str = "") -> str:
+    for key in keys:
+        value = data.get(key)
+        if value is not None and str(value).strip():
+            return str(value).strip()
+    return default
+
+
+def source_label(article: dict) -> str:
+    source = article.get("source", "")
+    source_name = article.get("source_name", "")
+    domain = article.get("domain", "")
+    country = article.get("source_country", "")
+
+    parts = [x for x in [source, source_name, domain, country] if x]
+    return " / ".join(parts)
+
+
 def normalize_text(text: str) -> str:
     text = strip_html(text)
     text = re.sub(r"[\"'“”‘’]", "", text)
@@ -213,7 +289,7 @@ def is_similar_title(title: str, title_list: List[str], threshold: float = SIMIL
 
 
 def parse_pub_date(pub_date: str) -> Optional[datetime]:
-    """RFC 2822, ISO 8601, YYYY-MM-DD 계열 날짜를 UTC datetime으로 변환한다."""
+    """여러 뉴스 API 날짜 문자열을 UTC datetime으로 변환한다."""
     if not pub_date:
         return None
 
@@ -241,8 +317,16 @@ def parse_pub_date(pub_date: str) -> Optional[datetime]:
     except Exception:
         pass
 
-    # 3) PolicyBriefing류: 2026-05-05 / 20260505 / 2026.05.05
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%Y%m%d", "%Y.%m.%d", "%Y.%m.%d %H:%M"):
+    # 3) PolicyBriefing류: 2026-05-05 / 20260505 / 2026.05.05 등
+    for fmt in (
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d",
+        "%Y%m%d%H%M%S",
+        "%Y%m%d",
+        "%Y.%m.%d %H:%M",
+        "%Y.%m.%d",
+    ):
         try:
             dt = datetime.strptime(text, fmt).replace(tzinfo=KST)
             return dt.astimezone(UTC)
@@ -290,6 +374,7 @@ def domain_score(url: str) -> int:
 def is_globally_blocked(title: str, url: str) -> bool:
     if get_domain(url) in GLOBAL_BLOCKED_DOMAINS:
         return True
+
     norm_title = normalize_text(title)
     return any(kw.lower() in norm_title for kw in GLOBAL_BLOCKED_TITLE_KEYWORDS)
 
@@ -320,8 +405,11 @@ def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]) ->
 
         now_str = fmt_kst("%Y-%m-%d %H:%M:%S")
         titles = " | ".join([a.get("title", "") for a in articles])
+        urls = " | ".join([a.get("url", "") for a in articles])
+        sources = " | ".join([source_label(a) for a in articles])
 
-        worksheet.append_row([now_str, topic_name, summary, titles])
+        # 기존 4열 구조를 크게 깨지 않으면서, 뒤쪽에 URL/출처를 보강한다.
+        worksheet.append_row([now_str, topic_name, summary, titles, urls, sources])
         logger.info(f"[{topic_name}] 구글 시트 저장 완료! (๑>ᴗ<๑)")
 
     except Exception as e:
@@ -398,7 +486,7 @@ async def fetch_json(
                 return await response.json(content_type=None)
 
             body = await response.text()
-            logger.warning(f"HTTP {response.status} | {url} | {body[:180]}")
+            logger.warning(f"HTTP {response.status} | {url} | {body[:240]}")
             return None
 
     except asyncio.TimeoutError:
@@ -409,7 +497,11 @@ async def fetch_json(
         return None
 
 
-async def fetch_naver_news_async(session: aiohttp.ClientSession, query: str, semaphore: asyncio.Semaphore) -> List[Dict]:
+async def fetch_naver_news_async(
+    session: aiohttp.ClientSession,
+    query: str,
+    semaphore: asyncio.Semaphore,
+) -> List[Dict]:
     async with semaphore:
         url = "https://openapi.naver.com/v1/search/news.json"
         headers = {
@@ -436,9 +528,12 @@ async def fetch_naver_news_async(session: aiohttp.ClientSession, query: str, sem
             if is_globally_blocked(title, link):
                 continue
 
+            description = compact_text(item.get("description", ""), limit=700)
+
             items.append({
                 "title": title,
-                "description": strip_html(item.get("description", "")),
+                "description": description,
+                "content": description,
                 "url": link,
                 "canonical_url": canonicalize_url(link),
                 "domain": get_domain(link),
@@ -448,18 +543,38 @@ async def fetch_naver_news_async(session: aiohttp.ClientSession, query: str, sem
                 "short_title": shorten_title(title),
                 "matched_query": query,
                 "source": "Naver",
+                "source_name": "",
+                "source_country": "kr",
             })
 
         return items
 
 
-async def fetch_gnews_async(session: aiohttp.ClientSession, query: str, semaphore: asyncio.Semaphore) -> List[Dict]:
+async def fetch_gnews_async(
+    session: aiohttp.ClientSession,
+    query: str,
+    semaphore: asyncio.Semaphore,
+) -> List[Dict]:
     async with semaphore:
         if not GNEWS_API_KEY:
             return []
 
         url = "https://gnews.io/api/v4/search"
-        params = {"q": query, "token": GNEWS_API_KEY, "lang": "en", "max": 5}
+        from_dt = (now_utc() - timedelta(days=MAX_ARTICLE_AGE_DAYS)).isoformat().replace("+00:00", "Z")
+        to_dt = now_utc().isoformat().replace("+00:00", "Z")
+
+        # 기존 token 방식은 유지한다. content까지 검색/요약 재료에 넣어 GNews 품질을 보강한다.
+        params = {
+            "q": query,
+            "token": GNEWS_API_KEY,
+            "lang": "en",
+            "max": 10,
+            "in": "title,description,content",
+            "from": from_dt,
+            "to": to_dt,
+            "sortby": "publishedAt",
+        }
+
         data = await fetch_json(session, url, params=params)
         items = []
 
@@ -478,9 +593,24 @@ async def fetch_gnews_async(session: aiohttp.ClientSession, query: str, semaphor
             if is_globally_blocked(title, link):
                 continue
 
+            raw_description = item.get("description", "") or ""
+            raw_content = item.get("content", "") or ""
+            source_info = item.get("source") or {}
+            if not isinstance(source_info, dict):
+                source_info = {}
+
+            source_name = source_info.get("name", "") or ""
+            source_country = source_info.get("country", "") or ""
+
+            combined_description = compact_text(
+                " ".join([raw_description, raw_content]).strip(),
+                limit=1000,
+            )
+
             items.append({
-                "title": title,
-                "description": item.get("description", ""),
+                "title": strip_html(title),
+                "description": combined_description,
+                "content": compact_text(raw_content, limit=1000),
                 "url": link,
                 "canonical_url": canonicalize_url(link),
                 "domain": get_domain(link),
@@ -490,12 +620,18 @@ async def fetch_gnews_async(session: aiohttp.ClientSession, query: str, semaphor
                 "short_title": shorten_title(title),
                 "matched_query": query,
                 "source": "GNews",
+                "source_name": source_name,
+                "source_country": source_country,
             })
 
         return items
 
 
-async def fetch_policy_briefing_async(session: aiohttp.ClientSession, query: str, semaphore: asyncio.Semaphore) -> List[Dict]:
+async def fetch_policy_briefing_async(
+    session: aiohttp.ClientSession,
+    query: str,
+    semaphore: asyncio.Semaphore,
+) -> List[Dict]:
     async with semaphore:
         if not GOV_API_KEY or not GOV_ENDPOINT:
             return []
@@ -504,7 +640,7 @@ async def fetch_policy_briefing_async(session: aiohttp.ClientSession, query: str
             "serviceKey": GOV_API_KEY,
             "searchWrd": query,
             "returnType": "json",
-            "numOfRows": 5,
+            "numOfRows": 10,
             "pageNo": 1,
         }
 
@@ -519,9 +655,15 @@ async def fetch_policy_briefing_async(session: aiohttp.ClientSession, query: str
             raw_items = [raw_items]
 
         for item in raw_items:
-            title = item.get("title") or item.get("newsTitle", "")
-            link = item.get("link") or item.get("newsId", "")
-            pub_date = item.get("regDate", "")
+            if not isinstance(item, dict):
+                continue
+
+            title = first_value(item, ["title", "newsTitle", "mainTitle", "subject"])
+            subtitle = first_value(item, ["subTitle", "subtitle", "sub_title"])
+            content = first_value(item, ["contents", "content", "newsContent", "articleContent", "body"])
+            department = first_value(item, ["deptName", "department", "departmentName", "orgName", "ministry"])
+            pub_date = first_value(item, ["regDate", "approveDate", "approvalDate", "aprvDt", "publishedAt"])
+            link = first_value(item, ["link", "url", "newsUrl", "articleUrl", "originUrl", "newsId"])
 
             if not title or not link:
                 continue
@@ -533,9 +675,15 @@ async def fetch_policy_briefing_async(session: aiohttp.ClientSession, query: str
             if is_globally_blocked(title, url_str):
                 continue
 
+            combined_description = compact_text(
+                " ".join([subtitle, department, content]).strip(),
+                limit=1200,
+            )
+
             items.append({
                 "title": strip_html(title),
-                "description": strip_html(str(item.get("contents", ""))[:200]),
+                "description": combined_description,
+                "content": compact_text(content, limit=1200),
                 "url": url_str,
                 "canonical_url": canonicalize_url(url_str),
                 "domain": "korea.kr",
@@ -545,6 +693,8 @@ async def fetch_policy_briefing_async(session: aiohttp.ClientSession, query: str
                 "short_title": shorten_title(title),
                 "matched_query": query,
                 "source": "PolicyBriefing",
+                "source_name": department,
+                "source_country": "kr",
             })
 
         return items
@@ -592,9 +742,10 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
     score = domain_score(article.get("url", ""))
 
     if article.get("source") == "PolicyBriefing":
-        score += 15
+        score += 12
+
     if article.get("source") == "GNews":
-        score += 5
+        score += 9 if topic_name in {"세계", "IT·과학"} else 4
 
     matched_query = normalize_text(article.get("matched_query", ""))
     if matched_query:
@@ -668,23 +819,100 @@ def pick_best_articles_for_topic(
 # 요약 및 배송
 # -----------------------------
 def build_summary_prompt(topic_name: str, articles: list[dict]) -> str:
-    article_blocks = [
-        f"[기사 {i}]\n제목: {a['title']}\n설명: {a.get('description', '')}\n링크: {a['url']}\n"
-        for i, a in enumerate(articles, 1)
-    ]
+    article_blocks = []
+
+    for i, article in enumerate(articles, 1):
+        article_blocks.append(
+            f"[기사 {i}]\n"
+            f"출처정보: {source_label(article)}\n"
+            f"검색어: {article.get('matched_query', '')}\n"
+            f"게시시각: {article.get('published_at', '')}\n"
+            f"제목: {article.get('title', '')}\n"
+            f"설명/본문요약재료: {compact_text(article.get('description', ''), 1100)}\n"
+            f"링크: {article.get('url', '')}\n"
+        )
 
     return f"""역할: 텔레그램 뉴스 브리핑 편집자
-목표: {topic_name} 관련 기사 15~20초 분량 요약
-문체: 한국어 브리핑체, 짧고 선명하게, 인삿말 금지.
-형식:
+
+목표:
+- '{topic_name}' 분야 기사들을 15~25초 안에 읽히는 한국어 뉴스 브리핑으로 요약한다.
+- 독자는 바쁜 일반 사용자다. 핵심 흐름은 빠르게, 사실관계는 정확하게 전달한다.
+- 단순히 제목을 다시 쓰는 것이 아니라, 입력 기사들이 말하는 핵심 변화를 짧게 압축한다.
+
+가장 중요한 원칙:
+- 입력 기사에 없는 사실, 숫자, 인명, 기관명, 시점, 전망을 새로 만들지 않는다.
+- 제목에 있는 표현이라도 설명/본문요약재료에서 뒷받침되지 않으면 강한 단정으로 쓰지 않는다.
+- 여러 기사를 억지로 하나의 인과관계로 엮지 않는다.
+- 기사 간 공통 흐름이 없으면 공통 흐름을 만들지 말고, 각각의 이슈로 분리한다.
+- 원문에 없는 '사상 첫', '역대급', '초비상', '충격', '패닉', '눈앞', '대폭발', '대혼란' 같은 과장 표현을 쓰지 않는다.
+- 수치가 있는 경우 입력 기사에 나온 수치만 사용한다.
+- 수치의 단위, 시점, 비교 대상이 불명확하면 수치를 생략하거나 완화해서 쓴다.
+- 불확실하거나 전망성인 내용은 '~가능성', '~전망', '~우려', '~관측'처럼 완화해서 쓴다.
+- 원문이 보도자료·정책브리핑 자료라면 정부 발표라는 성격을 반영하고, 정책 효과를 확정적으로 말하지 않는다.
+- GNews 등 해외 기사 재료는 한국어로 자연스럽게 번역하되, 원문에 없는 한국 영향은 덧붙이지 않는다.
+- 특정 진영·기업·기관을 홍보하는 말투를 피하고, 건조한 뉴스 문장으로 쓴다.
+- 기사 제목의 자극적 표현을 그대로 따라 하기보다, 사실 중심 문장으로 낮춰 쓴다.
+
+분야별 처리 기준:
+- 경제: 시장 수치, 금리, 환율, 물가, 부동산, 수출입, 고용 관련 내용은 숫자를 임의로 보강하지 않는다.
+- 경제: 주가·환율·금리 움직임은 '상승', '하락', '변동성 확대'처럼 입력 근거가 있는 범위에서만 쓴다.
+- 정치: 정당·정부·국회 이슈는 주체와 조치만 간결하게 쓴다. 의도 추정, 배후 추정, 승패 단정은 금지한다.
+- 정치: 선거·공천·법안·외교안보 이슈는 누가 무엇을 했는지 중심으로 정리한다.
+- 사회·생활문화: 단순 지역행사보다 사건, 사고, 재난, 제도 변화, 생활 영향, 교육·복지 변화를 우선한다.
+- 사회·생활문화: 축제·공연·전시 기사는 전국적 의미나 생활 영향이 약하면 과장하지 않는다.
+- 세계: 국제 이슈는 국가·기관·분쟁 당사자를 정확히 구분한다.
+- 세계: 해외 정치인의 발언은 원문에 있는 범위에서만 요약하고, 한국에 미칠 영향은 기사에 있을 때만 언급한다.
+- IT·과학: 기술 성과는 '연구', '개발', '발표', '도입', '상용화' 단계를 구분한다.
+- IT·과학: AI·반도체·우주·바이오 기사는 성능이나 파급효과를 원문 이상으로 확대하지 않는다.
+
+출력 형식:
 한눈에
-- 핵심 흐름 4줄
+- 핵심 흐름 1
+- 핵심 흐름 2
+- 핵심 흐름 3
+- 핵심 흐름 4
 
 주요 이슈
 1) 소제목
 한 문장 설명
-...
-금지: '브리핑입니다', 장문 복붙, 링크 출력.
+
+2) 소제목
+한 문장 설명
+
+3) 소제목
+한 문장 설명
+
+4) 소제목
+한 문장 설명
+
+작성 규칙:
+- '한눈에'는 반드시 4줄로 작성한다.
+- '한눈에' 각 줄은 서로 다른 이슈를 다룬다.
+- '주요 이슈'는 기사 수가 4개 미만이면 있는 기사 수만큼만 작성한다.
+- 주요 이슈의 소제목은 10~18자 정도로 짧게 쓴다.
+- 각 설명은 1문장으로 작성한다.
+- 각 설명은 35~75자 정도로 작성한다.
+- 링크는 출력하지 않는다.
+- '브리핑입니다', '다음은', '요약하면', '오늘의 뉴스입니다' 같은 인삿말은 쓰지 않는다.
+- 마크다운 굵게 표시, 이모지, 해시태그는 쓰지 않는다.
+- 입력 기사 제목을 그대로 복붙하지 말고, 의미만 압축한다.
+- 단, 고유명사와 핵심 수치는 원문 표현을 유지한다.
+- 같은 기관명이나 인물명이 반복되면 두 번째부터는 짧게 줄여도 된다.
+- 입력 기사 간 관련성이 낮으면 무리하게 하나의 큰 흐름으로 묶지 않는다.
+- 기사 내용이 약하거나 지역성이 강하면 '전국적 대형 이슈'처럼 포장하지 않는다.
+- 모르는 내용은 추측하지 말고, 입력된 기사 범위 안에서만 쓴다.
+
+좋은 문장 예시:
+- 한국은행의 금리 결정 경계감이 커지며 채권시장 변동성이 이어졌다.
+- 정부가 청년 주거 지원 방안을 발표했지만 구체적 효과는 추가 확인이 필요하다.
+- AI 반도체 설계 자동화 연구가 공개되며 개발 기간 단축 가능성이 제기됐다.
+
+나쁜 문장 예시:
+- 시장이 패닉에 빠졌다.
+- 역대급 위기가 현실화됐다.
+- 한국 경제 전체가 큰 충격을 받을 전망이다.
+- 이번 정책으로 문제가 완전히 해결될 것으로 보인다.
+
 입력 기사:
 {chr(10).join(article_blocks)}"""
 
@@ -784,7 +1012,12 @@ def build_telegram_message(topic_name: str, summary: str, articles: list[dict]) 
 # -----------------------------
 # 메인 비동기 워크플로우
 # -----------------------------
-async def collect_topic_candidates(session: aiohttp.ClientSession, topic_name: str, cfg: dict, semaphore: asyncio.Semaphore) -> list[dict]:
+async def collect_topic_candidates(
+    session: aiohttp.ClientSession,
+    topic_name: str,
+    cfg: dict,
+    semaphore: asyncio.Semaphore,
+) -> list[dict]:
     logger.info(f"[{topic_name}] 수집 시작")
 
     tasks = []
@@ -845,7 +1078,10 @@ async def run_topic_async(
 
     logger.info(
         f"[{topic_name}] 선정 기사: "
-        + " / ".join([f"{a.get('short_title')}({a.get('topic_score')})" for a in fresh_articles])
+        + " / ".join([
+            f"{a.get('short_title')}({a.get('topic_score')}, {a.get('source')})"
+            for a in fresh_articles
+        ])
     )
 
     summary = await summarize_topic_async(topic_name, fresh_articles)
