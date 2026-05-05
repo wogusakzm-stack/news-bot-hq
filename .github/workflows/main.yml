@@ -1,20 +1,28 @@
 name: 6-Hour News Bot
 on:
   schedule:
-    - cron: '0 */6 * * *' # 4시간마다 (UTC 기준)
-  workflow_dispatch:      # 수동 실행 버튼 생성
+    - cron: '0 */6 * * *' # 6시간마다 (UTC 00, 06, 12, 18시 -> 한국 09, 15, 21, 03시)
+  workflow_dispatch:      # 수동 실행 버튼
+
+permissions:
+  contents: write         # 본 기사 목록(seen_urls.json)을 저장하기 위해 필요해!
+
 jobs:
   run-bot:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Python Setup
         uses: actions/setup-python@v5
         with: {python-version: '3.10'}
+
       - name: Install Deps
         run: pip install -r requirements.txt
+
       - name: Run Bot
         env:
+          TZ: 'Asia/Seoul' # ✨ 서버의 시계 자체를 한국 시간으로 고정!
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -23,4 +31,14 @@ jobs:
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
           GOV_API_KEY: ${{ secrets.GOV_API_KEY }}
           GOV_ENDPOINT: ${{ secrets.GOV_ENDPOINT }}
+          GOOGLE_SHEETS_JSON: ${{ secrets.GOOGLE_SHEETS_JSON }} # ✨ 구글 시트 열쇠 전송
+          SHEET_ID: ${{ secrets.SHEET_ID }}                   # ✨ 장부 아이디 전송
         run: python news_bot.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add seen_urls.json
+          git commit -m "Update seen news list [skip ci]" || echo "No changes to commit"
+          git push
