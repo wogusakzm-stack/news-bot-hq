@@ -31,7 +31,7 @@ GNEWS_API_KEY = os.getenv("GNEWS_API_KEY")
 GOV_API_KEY = os.getenv("GOV_API_KEY")
 GOV_ENDPOINT = os.getenv("GOV_ENDPOINT")
 
-# 구글 시트 연동을 위한 환경 변수 (GitHub Secrets에서 가져옴)
+# 구글 시트 연동을 위한 환경 변수
 GOOGLE_SHEETS_JSON = os.getenv("GOOGLE_SHEETS_JSON")
 SHEET_ID = os.getenv("SHEET_ID")
 
@@ -115,6 +115,9 @@ logger = logging.getLogger(__name__)
 
 semaphore = asyncio.Semaphore(5)
 
+# 한국 시간 고정 변수 
+KST_OFFSET = timedelta(hours=9)
+
 # -----------------------------
 # 공통 유틸리티
 # -----------------------------
@@ -192,7 +195,6 @@ def is_globally_blocked(title: str, url: str) -> bool:
 # 구글 시트 저장 유틸리티
 # -----------------------------
 def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]):
-    """수집된 요약본을 구글 시트에 기록합니다."""
     try:
         if not GOOGLE_SHEETS_JSON or not SHEET_ID:
             logger.warning("구글 시트 환경 변수 누락. 시트 저장을 건너뜁니다.")
@@ -203,13 +205,9 @@ def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]):
         sh = gc.open_by_key(SHEET_ID)
         worksheet = sh.get_worksheet(0)
         
-        # 한국 시간(KST) 기록 - 강제 연산 공식
-        now_str = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
-        
-        # 기사 제목들 합치기 (분석용)
+        now_str = (datetime.now(timezone.utc) + KST_OFFSET).strftime("%Y-%m-%d %H:%M:%S")
         titles = " | ".join([a.get('title', '') for a in articles])
         
-        # 새 행으로 추가: [기록시간, 분야, 요약내용, 참고기사제목들]
         worksheet.append_row([now_str, topic_name, summary, titles])
         logger.info(f"[{topic_name}] 구글 시트 저장 완료! (๑>ᴗ<๑)")
         
@@ -254,7 +252,7 @@ async def fetch_json(session: aiohttp.ClientSession, url: str, headers: dict = N
             async with session.get(url, headers=headers, params=params, timeout=10) as response:
                 if response.status == 200: return await response.json()
         except Exception as e:
-            logger.error(f"요청 에러 {url}: {e}")
+            pass
         return None
 
 async def fetch_naver_news_async(session: aiohttp.ClientSession, query: str) -> List[Dict]:
@@ -459,15 +457,16 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
     summary = await summarize_topic_async(topic_name, fresh_articles)
     links_section = "\n원문\n" + "\n".join([f"{i}. {html.escape(a['short_title'])}\n{a['url']}\n" for i, a in enumerate(fresh_articles[:4], 1)])
     
-    # 한국 시간(KST) 기록 - 강제 연산 공식 (텔레그램용)
-    now_kst = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%m-%d %H:%M")
+    # 여기서 철저하게 UTC에서 9시간을 강제로 더해서 문자열로 만든다!
+    now_kst = (datetime.now(timezone.utc) + KST_OFFSET).strftime("%m-%d %H:%M")
+    logger.info(f"[{topic_name}] 텔레그램 메시지 조립 시간 확인: {now_kst}")
     
     message = f"📰 <b>{html.escape(topic_name)}</b>\n{now_kst}\n\n{html.escape(summary)}\n{links_section}"
     
     # 텔레그램 배송
     await send_telegram_async(session, message)
     
-    # 구글 시트에 데이터 기록 (기억의 도서관!)
+    # 구글 시트에 데이터 기록 
     save_to_google_sheet(topic_name, summary, fresh_articles)
     
     for article in fresh_articles:
