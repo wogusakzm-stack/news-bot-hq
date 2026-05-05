@@ -37,6 +37,12 @@ GOV_ENDPOINT = os.getenv("GOV_ENDPOINT")
 GOOGLE_SHEETS_JSON = os.getenv("GOOGLE_SHEETS_JSON")
 SHEET_ID = os.getenv("SHEET_ID")
 
+# 뉴스 저장 탭 외에, 같은 구글스프레드시트 안의 아래 두 탭을 투자 태깅 사전으로 사용한다.
+# - SectorRules: 섹터 | 키워드 | 영향방향 | 기본점수 | 메모
+# - Watchlist: 종목명 | 티커 | 섹터 | 키워드 | 활성화
+SECTOR_RULES_SHEET_NAME = "SectorRules"
+WATCHLIST_SHEET_NAME = "Watchlist"
+
 SEEN_FILE = "seen_urls.json"
 
 KST = ZoneInfo("Asia/Seoul")
@@ -586,6 +592,193 @@ def is_globally_blocked(title: str, url: str) -> bool:
 
 
 # -----------------------------
+# 시장 태깅 유틸리티
+# -----------------------------
+def split_keywords(text: str) -> list[str]:
+    if not text:
+        return []
+
+    parts = re.split(r"[,，、/|]", str(text))
+    return [p.strip() for p in parts if p.strip()]
+
+
+def is_active_value(value: Any) -> bool:
+    text = str(value).strip().lower()
+    return text in {"true", "y", "yes", "1", "활성", "사용", "사용함"}
+
+
+def normalize_ticker(value: Any) -> str:
+    text = str(value).strip()
+
+    if not text:
+        return ""
+
+    # 구글시트가 005930을 5930 또는 5930.0으로 바꿔도 6자리로 복구한다.
+    if text.replace(".", "", 1).isdigit():
+        text = text.split(".")[0]
+        return text.zfill(6)
+
+    return text
+
+
+def safe_int(value: Any, default: int = 1) -> int:
+    try:
+        return int(float(str(value).strip()))
+    except Exception:
+        return default
+
+
+def unique_keep_order(items: list[str]) -> list[str]:
+    result = []
+    seen = set()
+
+    for item in items:
+        item = str(item).strip()
+        if not item:
+            continue
+
+        key = normalize_text(item)
+        if key in seen:
+            continue
+
+        seen.add(key)
+        result.append(item)
+
+    return result
+
+
+def match_keyword_in_text(keyword: str, text: str) -> bool:
+    kw = normalize_text(keyword)
+    target = normalize_text(text)
+    return bool(kw and kw in target)
+
+
+def get_worksheet_records(sh, worksheet_name: str) -> list[dict]:
+    try:
+        ws = sh.worksheet(worksheet_name)
+        return ws.get_all_records()
+    except Exception as e:
+        logger.warning(f"구글시트 탭 읽기 실패 | worksheet={worksheet_name} | {e}")
+        return []
+
+
+def build_market_tags_from_sheets(sh, topic_name: str, summary: str, articles: list[dict]) -> dict:
+    """
+    SectorRules / Watchlist 탭을 읽어 뉴스 묶음의 투자 관련 태그를 만든다.
+    - 관련섹터: SectorRules의 키워드가 제목/요약/설명에 걸리면 기록
+    - 관련종목: Watchlist의 활성화 TRUE 종목 중 키워드가 걸리면 기록
+    - 영향방향/확신도/투자메모: 룰 기반 보수적 판단
+    """
+    combined_text = " ".join(
+        [topic_name, summary]
+        + [a.get("title", "") for a in articles]
+        + [a.get("description", "") for a in articles]
+    )
+
+    sector_records = get_worksheet_records(sh, SECTOR_RULES_SHEET_NAME)
+    watchlist_records = get_worksheet_records(sh, WATCHLIST_SHEET_NAME)
+
+    matched_sectors = []
+    impact_parts = []
+    memo_parts = []
+    score_candidates = []
+
+    # 1) SectorRules 탭 매칭
+    for row in sector_records:
+        sector = str(row.get("섹터", "")).strip()
+        keyword = str(row.get("키워드", "")).strip()
+        direction = str(row.get("영향방향", "")).strip()
+        base_score = safe_int(row.get("기본점수", 1), default=1)
+        memo = str(row.get("메모", "")).strip()
+
+        if not sector or not keyword:
+            continue
+
+        if match_keyword_in_text(keyword, combined_text):
+            matched_sectors.append(sector)
+            score_candidates.append(base_score)
+
+            if direction:
+                impact_parts.append(f"{sector}: {direction}")
+
+            if memo:
+                memo_parts.append(f"{sector}/{keyword}: {memo}")
+
+    matched_sectors = unique_keep_order(matched_sectors)
+
+    # 2) Watchlist 탭 매칭
+    matched_stocks = []
+
+    for row in watchlist_records:
+        active = row.get("활성화", "")
+        if not is_active_value(active):
+            continue
+
+        stock_name = str(row.get("종목명", "")).strip()
+        ticker = normalize_ticker(row.get("티커", ""))
+        keywords = split_keywords(row.get("키워드", ""))
+
+        if not stock_name:
+            continue
+
+        keyword_hit = any(match_keyword_in_text(kw, combined_text) for kw in keywords)
+
+        if keyword_hit:
+            label = f"{stock_name}({ticker})" if ticker else stock_name
+            matched_stocks.append(label)
+            score_candidates.append(3)
+
+    matched_stocks = unique_keep_order(matched_stocks)
+
+    # 3) 확신도 계산
+    if not matched_sectors and not matched_stocks:
+        return {
+            "sectors": "",
+            "stocks": "",
+            "impact": "",
+            "confidence": 1,
+            "memo": "투자 관련성 낮음.",
+        }
+
+    confidence = max(score_candidates) if score_candidates else 2
+
+    if matched_stocks:
+        confidence = max(confidence, 3)
+
+    # 시장 영향이 비교적 큰 키워드는 확신도 상향. 단, 이것도 매수 신호가 아니라 확인 신호다.
+    strong_event_keywords = [
+        "호르무즈", "전쟁", "중동", "이란", "유가 급등", "금리 인하",
+        "AI 칩", "HBM", "데이터센터", "관세", "수출규제", "원전", "전력망",
+    ]
+
+    if any(match_keyword_in_text(kw, combined_text) for kw in strong_event_keywords):
+        confidence = max(confidence, 4)
+
+    confidence = max(1, min(confidence, 5))
+
+    impact = " / ".join(unique_keep_order(impact_parts))
+    if not impact:
+        impact = "관련 업종 영향 가능성 확인 필요"
+
+    memo_parts = unique_keep_order(memo_parts)
+    memo = " | ".join(memo_parts[:4]) if memo_parts else "관련 뉴스 확인 필요."
+    memo += " 직접 매수 신호 아님."
+
+    logger.info(
+        f"[{topic_name}] 시장 태그 | sectors={matched_sectors or []}, "
+        f"stocks={matched_stocks or []}, confidence={confidence}"
+    )
+
+    return {
+        "sectors": ", ".join(matched_sectors),
+        "stocks": ", ".join(matched_stocks),
+        "impact": impact,
+        "confidence": confidence,
+        "memo": memo,
+    }
+
+
+# -----------------------------
 # 구글 시트 저장 유틸리티
 # -----------------------------
 def parse_google_sheets_json(raw: str) -> dict:
@@ -619,9 +812,29 @@ def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]) ->
         urls = " | ".join([a.get("url", "") for a in articles])
         sources = " | ".join([source_label(a) for a in articles])
 
-        # 저장 열: 시각 | 분야 | 요약 | 기사제목들 | URL들 | 출처들
+        market_tags = build_market_tags_from_sheets(
+            sh=sh,
+            topic_name=topic_name,
+            summary=summary,
+            articles=articles,
+        )
+
+        # 저장 열:
+        # 시각 | 분야 | 요약 | 기사제목 | URL | 출처 | 관련섹터 | 관련종목 | 영향방향 | 확신도 | 투자메모
         worksheet.append_row(
-            [now_str, topic_name, summary, titles, urls, sources],
+            [
+                now_str,
+                topic_name,
+                summary,
+                titles,
+                urls,
+                sources,
+                market_tags["sectors"],
+                market_tags["stocks"],
+                market_tags["impact"],
+                market_tags["confidence"],
+                market_tags["memo"],
+            ],
             value_input_option="USER_ENTERED",
         )
         logger.info(f"[{topic_name}] 구글 시트 저장 완료! (๑>ᴗ<๑)")
