@@ -31,7 +31,7 @@ GNEWS_API_KEY = os.getenv("GNEWS_API_KEY")
 GOV_API_KEY = os.getenv("GOV_API_KEY")
 GOV_ENDPOINT = os.getenv("GOV_ENDPOINT")
 
-# 구글 시트 연동을 위한 환경 변수 (GitHub Secrets에서 가져옴)
+# 구글 시트 연동
 GOOGLE_SHEETS_JSON = os.getenv("GOOGLE_SHEETS_JSON")
 SHEET_ID = os.getenv("SHEET_ID")
 
