@@ -203,9 +203,8 @@ def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]):
         sh = gc.open_by_key(SHEET_ID)
         worksheet = sh.get_worksheet(0)
         
-        # 한국 시간(KST) 기록
-        kst = timezone(timedelta(hours=9))
-        now_str = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%m-%d %H:%M")
+        # 한국 시간(KST) 기록 - 강제 연산 공식
+        now_str = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
         
         # 기사 제목들 합치기 (분석용)
         titles = " | ".join([a.get('title', '') for a in articles])
@@ -460,9 +459,8 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
     summary = await summarize_topic_async(topic_name, fresh_articles)
     links_section = "\n원문\n" + "\n".join([f"{i}. {html.escape(a['short_title'])}\n{a['url']}\n" for i, a in enumerate(fresh_articles[:4], 1)])
     
-    # 텔레그램용 KST 시간 포맷 (핵심 시공간 마법!)
-    kst = timezone(timedelta(hours=9))
-    now_kst = datetime.now(kst).strftime("%m-%d %H:%M")
+    # 한국 시간(KST) 기록 - 강제 연산 공식 (텔레그램용)
+    now_kst = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%m-%d %H:%M")
     
     message = f"📰 <b>{html.escape(topic_name)}</b>\n{now_kst}\n\n{html.escape(summary)}\n{links_section}"
     
