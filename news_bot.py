@@ -6,7 +6,7 @@ import html
 import logging
 import asyncio
 import aiohttp
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
 from typing import Any, List, Dict, Set
 from difflib import SequenceMatcher
@@ -61,7 +61,6 @@ TRUSTED_DOMAIN_SCORES = {
     "thelec.kr": 1, "biz.chosun.com": 1,
 }
 
-# GNews를 위한 영어 키워드 추가
 TOPIC_CONFIGS = {
     "경제": {
         "search_keywords": ["증시", "환율", "금리", "물가", "부동산", "고용", "수출", "한국은행", "연준", "원달러", "stock market", "interest rate"],
@@ -101,7 +100,6 @@ TOPIC_CONFIGS = {
 }
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-# 파일과 콘솔 모두에 로깅
 logging.basicConfig(
     level=logging.INFO, 
     format="%(asctime)s | %(levelname)s | %(message)s", 
@@ -110,7 +108,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 동시성 제어 세마포어 (API 서버 과부하 방지)
 semaphore = asyncio.Semaphore(5)
 
 # -----------------------------
@@ -311,7 +308,6 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
 
     score = domain_score(article.get("url", ""))
     
-    # 가산점 팍팍! 정책 브리핑과 외신이 버려지지 않도록
     if article.get("source") == "PolicyBriefing": score += 15 
     if article.get("source") == "GNews": score += 5
 
@@ -355,17 +351,17 @@ def pick_best_articles_for_topic(topic_name: str, candidates: list[dict], cfg: d
 def build_summary_prompt(topic_name: str, articles: list[dict]) -> str:
     article_blocks = [f"[기사 {i}]\n제목: {a['title']}\n설명: {a['description']}\n링크: {a['url']}\n" for i, a in enumerate(articles, 1)]
     return f"""역할: 텔레그램 뉴스 브리핑 편집자
-목표: {topic_name} 관련 기사 15~20초 분량 요약 (관련 없는 내용 제외, 중복 이슈 병합, 추측/감탄 배제, 사실 중심)
+목표: {topic_name} 관련 기사 15~20초 분량 요약
 문체: 한국어 브리핑체, 짧고 선명하게, 인삿말 금지.
 형식:
 한눈에
-• 핵심 흐름 4줄
+- 핵심 흐름 4줄
 
 주요 이슈
 1) 소제목
 한 문장 설명
 ...
-금지: '브리핑입니다', '##', '**', 장문 복붙, 링크 출력.
+금지: '브리핑입니다', 장문 복붙, 링크 출력.
 입력 기사:\n{chr(10).join(article_blocks)}"""
 
 def generate_with_model(model_name: str, prompt: str) -> str:
@@ -383,7 +379,7 @@ async def summarize_topic_async(topic_name: str, articles: list[dict]) -> str:
                 return await loop.run_in_executor(None, generate_with_model, model_name, prompt)
             except Exception as e:
                 last_error = e
-                await asyncio.sleep(1.5 * attempt)
+                await asyncio.sleep(attempt + 0.5)
     raise last_error if last_error else RuntimeError("모델 호출 실패")
 
 async def send_telegram_async(session: aiohttp.ClientSession, text: str) -> None:
@@ -392,7 +388,7 @@ async def send_telegram_async(session: aiohttp.ClientSession, text: str) -> None
     while remain:
         if len(remain) <= TELEGRAM_SAFE_LIMIT: chunks.append(remain); break
         cut = remain.rfind("\n", 0, TELEGRAM_SAFE_LIMIT)
-        if cut == -1 or cut < int(TELEGRAM_SAFE_LIMIT * 0.6): cut = TELEGRAM_SAFE_LIMIT
+        if cut == -1 or cut < (TELEGRAM_SAFE_LIMIT // 2): cut = TELEGRAM_SAFE_LIMIT
         chunks.append(remain[:cut].strip()); remain = remain[cut:].strip()
     
     for chunk in chunks:
@@ -408,16 +404,16 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
     logger.info(f"[{topic_name}] 수집 시작")
     tasks = []
     for q in cfg["search_keywords"]:
-        tasks.append(fetch_naver_news_async(session, q))
-        tasks.append(fetch_gnews_async(session, q))
-        tasks.append(fetch_policy_briefing_async(session, q))
+        tasks.append(asyncio.create_task(fetch_naver_news_async(session, q)))
+        tasks.append(asyncio.create_task(fetch_gnews_async(session, q)))
+        tasks.append(asyncio.create_task(fetch_policy_briefing_async(session, q)))
     
-    results = await asyncio.gather(*tasks)
+    done, pending = await asyncio.wait(tasks)
+    results = [task.result() for task in done if not task.exception()]
     
-    # 수집 현황 로그 출력 (누가 범인인지 잡자!)
-    naver_count = sum(len(r) for r in results[0::3])
-    gnews_count = sum(len(r) for r in results[1::3])
-    gov_count = sum(len(r) for r in results[2::3])
+    naver_count = sum(len(r) for r in results if r and r[0].get("source") == "Naver")
+    gnews_count = sum(len(r) for r in results if r and r[0].get("source") == "GNews")
+    gov_count = sum(len(r) for r in results if r and r[0].get("source") == "PolicyBriefing")
     logger.info(f"[{topic_name}] 수집완료 - Naver:{naver_count}, GNews:{gnews_count}, Policy:{gov_count}")
 
     candidates = [item for sublist in results for item in sublist]
@@ -429,7 +425,11 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
 
     summary = await summarize_topic_async(topic_name, fresh_articles)
     links_section = "\n원문\n" + "\n".join([f"{i}. {html.escape(a['short_title'])}\n{a['url']}\n" for i, a in enumerate(fresh_articles[:4], 1)])
-    message = f"📰 <b>{html.escape(topic_name)}</b>\n{datetime.now().strftime('%m-%d %H:%M')}\n\n{html.escape(summary)}\n{links_section}"
+    
+    kst = timezone(timedelta(hours=9))
+    now_kst = datetime.now(kst).strftime("%m-%d %H:%M")
+    
+    message = f"📰 <b>{html.escape(topic_name)}</b>\n{now_kst}\n\n{html.escape(summary)}\n{links_section}"
     
     await send_telegram_async(session, message)
     
@@ -446,12 +446,15 @@ async def main_async() -> None:
     used_urls, used_titles = set(), []
     
     async with aiohttp.ClientSession() as session:
-        topic_tasks = [run_topic_async(session, name, cfg, seen_data, used_urls, used_titles) for name, cfg in TOPIC_CONFIGS.items()]
-        results = await asyncio.gather(*topic_tasks, return_exceptions=True)
+        topic_tasks = [asyncio.create_task(run_topic_async(session, name, cfg, seen_data, used_urls, used_titles)) for name, cfg in TOPIC_CONFIGS.items()]
+        done, pending = await asyncio.wait(topic_tasks)
         
-        sent_count = sum(1 for r in results if r is True)
-        for i, r in enumerate(results):
-            if isinstance(r, Exception): logger.exception(f"{list(TOPIC_CONFIGS.keys())[i]} 오류: {r}")
+        sent_count = 0
+        for task in done:
+            if task.exception():
+                logger.exception(f"오류: {task.exception()}")
+            elif task.result() is True:
+                sent_count += 1
 
     save_seen(seen_data)
     print(f"전체 완료 | 전송된 분야 수: {sent_count}")
