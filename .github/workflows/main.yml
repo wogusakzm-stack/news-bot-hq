@@ -4,7 +4,7 @@ on:
   schedule:
     # 한국시간 기준 00:00, 06:00, 12:00, 18:00 실행
     # GitHub Actions cron은 UTC 기준
-    - cron: '*/5 * * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 permissions:
