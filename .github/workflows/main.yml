@@ -1,7 +1,7 @@
-name: 4-Hour News Bot
+name: 6-Hour News Bot
 on:
   schedule:
-    - cron: '0 */4 * * *' # 4시간마다 (UTC 기준)
+    - cron: '0 */6 * * *' # 4시간마다 (UTC 기준)
   workflow_dispatch:      # 수동 실행 버튼 생성
 jobs:
   run-bot:
