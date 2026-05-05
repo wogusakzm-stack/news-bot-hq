@@ -4,6 +4,8 @@ import json
 import html
 import logging
 import asyncio
+import xml.etree.ElementTree as ET
+from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
 from typing import Any, List, Dict, Optional
@@ -51,34 +53,60 @@ PER_KEYWORD_DISPLAY = 8
 ARTICLES_PER_TOPIC = 4
 TELEGRAM_SAFE_LIMIT = 3200
 SIMILARITY_THRESHOLD = 0.84
+
+# API 과호출 방지 설정
 HTTP_TIMEOUT_SECONDS = 12
 HTTP_CONCURRENCY = 3
 
-# API 과호출 방지 설정
-# - Naver는 전 분야 기본 수집원으로 쓰되, 키워드 수를 제한해 429를 줄인다.
-# - GNews는 무료 한도가 낮으므로 세계/IT 핵심 키워드에만 쓴다.
-# - 정책브리핑은 서버 500이 잦을 수 있어 경제/정치/사회 핵심 키워드에만 쓴다.
 NAVER_KEYWORD_LIMIT = 10
+
+# GNews는 무료 한도가 작으므로 세계/IT에서만 핵심 키워드 2개 호출
 GNEWS_TOPICS = {"세계", "IT·과학"}
 GNEWS_KEYWORD_LIMIT = 2
+
+# 정책브리핑 API는 검색어 API가 아니라 날짜 목록 API라서 분야별 1회만 호출 후 로컬 필터
 POLICY_TOPICS = {"경제", "정치", "사회·생활문화"}
-POLICY_KEYWORD_LIMIT = 2
+POLICY_RESULT_LIMIT = 8
+
+# 한 분야가 한 언론사로 도배되는 것을 방지
+MAX_DOMAIN_PER_TOPIC = 2
 
 GLOBAL_BLOCKED_DOMAINS = {
-    "breaknews.com", "lecturernews.com", "tongilnews.com",
+    "breaknews.com",
+    "lecturernews.com",
+    "tongilnews.com",
 }
 
 GLOBAL_BLOCKED_TITLE_KEYWORDS = [
     "기고", "칼럼", "사설", "오피니언", "특강", "강연", "저자를 만나다",
+    "시평", "진단", "기자수첩", "데스크", "취재수첩", "만평",
+    "인터뷰", "대담", "해설", "논평", "寄稿",
 ]
 
 TRUSTED_DOMAIN_SCORES = {
-    "yna.co.kr": 3, "news1.kr": 3, "sbs.co.kr": 3, "kbs.co.kr": 3,
-    "imbc.com": 3, "ytn.co.kr": 3, "mk.co.kr": 2, "hankyung.com": 2,
-    "sedaily.com": 2, "edaily.co.kr": 2, "newsis.com": 2, "joongang.co.kr": 2,
-    "chosun.com": 2, "donga.com": 2, "khan.co.kr": 2, "fnnews.com": 2,
-    "etnews.com": 2, "zdnet.co.kr": 2, "ddaily.co.kr": 2, "bloter.net": 1,
-    "thelec.kr": 1, "biz.chosun.com": 1, "korea.kr": 3,
+    "yna.co.kr": 3,
+    "news1.kr": 3,
+    "sbs.co.kr": 3,
+    "kbs.co.kr": 3,
+    "imbc.com": 3,
+    "ytn.co.kr": 3,
+    "mk.co.kr": 2,
+    "hankyung.com": 2,
+    "sedaily.com": 2,
+    "edaily.co.kr": 2,
+    "newsis.com": 2,
+    "joongang.co.kr": 2,
+    "chosun.com": 2,
+    "donga.com": 2,
+    "khan.co.kr": 2,
+    "fnnews.com": 2,
+    "etnews.com": 2,
+    "zdnet.co.kr": 2,
+    "ddaily.co.kr": 2,
+    "bloter.net": 1,
+    "thelec.kr": 1,
+    "biz.chosun.com": 1,
+    "korea.kr": 3,
 }
 
 TOPIC_CONFIGS = {
@@ -123,13 +151,14 @@ TOPIC_CONFIGS = {
         ],
         "positive_keywords": [
             "사고", "판결", "기소", "수사", "병원", "보건", "양육",
-            "문화", "도서관", "축제", "교육", "복지", "생활", "노동",
-            "산재", "재난", "화재",
+            "교육", "복지", "생활", "노동", "산재", "재난", "화재",
         ],
         "negative_keywords": [
             "증시", "환율", "금리", "물가", "부동산", "비트코인", "연준",
             "대선", "총선", "대통령실", "외교", "제재", "AI 모델", "오픈AI",
             "엔비디아", "러시아산 원유", "도핑", "선수",
+            "어린이날", "대축제", "문화제", "후보", "공약", "시장 후보",
+            "축사", "개최", "참여", "특강", "행사", "페스티벌",
         ],
         "blocked_domains": set(),
         "min_score": 7,
@@ -165,6 +194,8 @@ TOPIC_CONFIGS = {
         "negative_keywords": [
             "총선", "대선", "국회", "여야", "외교", "도핑", "선수", "수목원",
             "전시", "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치",
+            "증시", "주가", "코스피", "코스닥", "파업", "임금", "노조",
+            "실적", "영업이익", "매출", "투자자", "하락 전환",
         ],
         "blocked_domains": set(),
         "min_score": 8,
@@ -232,6 +263,7 @@ def require_env() -> None:
         "TELEGRAM_CHAT_ID": TELEGRAM_CHAT_ID,
     }
     missing = [key for key, value in required.items() if not value]
+
     if missing:
         raise RuntimeError(f"환경변수 누락: {', '.join(missing)}")
 
@@ -258,6 +290,22 @@ def first_value(data: dict, keys: list[str], default: str = "") -> str:
         value = data.get(key)
         if value is not None and str(value).strip():
             return str(value).strip()
+    return default
+
+
+def xml_text(element: Optional[ET.Element], tag_name: str, default: str = "") -> str:
+    if element is None:
+        return default
+
+    found = element.find(tag_name)
+    if found is not None and found.text:
+        return found.text.strip()
+
+    # namespace가 붙어 오는 경우 대비
+    for child in list(element):
+        if child.tag.endswith(tag_name) and child.text:
+            return child.text.strip()
+
     return default
 
 
@@ -327,7 +375,7 @@ def parse_pub_date(pub_date: str) -> Optional[datetime]:
     except Exception:
         pass
 
-    # 3) PolicyBriefing류: 2026-05-05 / 20260505 / 2026.05.05 등
+    # 3) PolicyBriefing류: 2026-05-05 / 20260505 / 2026.05.05 / 09/27/2021 17:48:00
     for fmt in (
         "%Y-%m-%d %H:%M:%S",
         "%Y-%m-%d %H:%M",
@@ -336,6 +384,8 @@ def parse_pub_date(pub_date: str) -> Optional[datetime]:
         "%Y%m%d",
         "%Y.%m.%d %H:%M",
         "%Y.%m.%d",
+        "%m/%d/%Y %H:%M:%S",
+        "%m/%d/%Y %H:%M",
     ):
         try:
             dt = datetime.strptime(text, fmt).replace(tzinfo=KST)
@@ -520,6 +570,7 @@ async def fetch_json(
                 await asyncio.sleep(1.5 + attempt)
                 continue
             return None
+
         except Exception as e:
             logger.warning(f"요청 실패 | {url} | {e}")
             if attempt < retries:
@@ -596,7 +647,6 @@ async def fetch_gnews_async(
         from_dt = (now_utc() - timedelta(days=MAX_ARTICLE_AGE_DAYS)).isoformat().replace("+00:00", "Z")
         to_dt = now_utc().isoformat().replace("+00:00", "Z")
 
-        # 기존 token 방식은 유지한다. content까지 검색/요약 재료에 넣어 GNews 품질을 보강한다.
         params = {
             "q": query,
             "token": GNEWS_API_KEY,
@@ -660,77 +710,148 @@ async def fetch_gnews_async(
         return items
 
 
+def policy_date_range(days: int = MAX_ARTICLE_AGE_DAYS) -> tuple[str, str]:
+    end_dt = now_kst()
+    start_dt = end_dt - timedelta(days=days)
+    return start_dt.strftime("%Y%m%d"), end_dt.strftime("%Y%m%d")
+
+
+def policy_item_to_article(item: ET.Element, topic_name: str, cfg: dict) -> Optional[dict]:
+    # 정책브리핑 정책뉴스 API XML 주요 필드
+    title = xml_text(item, "Title")
+    subtitle1 = xml_text(item, "SubTitle1")
+    subtitle2 = xml_text(item, "SubTitle2")
+    subtitle3 = xml_text(item, "SubTitle3")
+    content = xml_text(item, "DataContents")
+    department = xml_text(item, "MinisterCode")
+    approve_date = xml_text(item, "ApproveDate")
+    original_url = xml_text(item, "OriginalUrl")
+    news_id = xml_text(item, "NewsItemId")
+
+    if not title:
+        return None
+
+    url_str = original_url
+    if not url_str and news_id:
+        url_str = f"https://www.korea.kr/news/policyNewsView.do?newsId={news_id}&call_from=openData"
+
+    if not url_str:
+        return None
+
+    combined_description = compact_text(
+        " ".join([subtitle1, subtitle2, subtitle3, department, content]).strip(),
+        limit=1200,
+    )
+
+    searchable = normalize_text(f"{title} {combined_description}")
+    topic_words = cfg.get("search_keywords", []) + cfg.get("positive_keywords", [])
+
+    # 정책브리핑 API는 검색어가 아니라 날짜 목록 API라서 받아온 뒤 로컬에서 분야 키워드 필터링
+    if not any(normalize_text(word) in searchable for word in topic_words):
+        return None
+
+    matched_query = ""
+    for word in topic_words:
+        if normalize_text(word) in searchable:
+            matched_query = word
+            break
+
+    return {
+        "title": strip_html(title),
+        "description": combined_description,
+        "content": compact_text(content, limit=1200),
+        "url": url_str,
+        "canonical_url": canonicalize_url(url_str),
+        "domain": "korea.kr",
+        "published_at": approve_date,
+        "published_dt": parse_pub_date(approve_date),
+        "normalized_title": normalize_title(title),
+        "short_title": shorten_title(title),
+        "matched_query": matched_query or topic_name,
+        "source": "PolicyBriefing",
+        "source_name": department,
+        "source_country": "kr",
+    }
+
+
 async def fetch_policy_briefing_async(
     session: aiohttp.ClientSession,
-    query: str,
+    topic_name: str,
+    cfg: dict,
     semaphore: asyncio.Semaphore,
 ) -> List[Dict]:
     async with semaphore:
         if not GOV_API_KEY or not GOV_ENDPOINT:
             return []
 
+        start_date, end_date = policy_date_range(MAX_ARTICLE_AGE_DAYS)
+
         params = {
             "serviceKey": GOV_API_KEY,
-            "searchWrd": query,
-            "returnType": "json",
-            "numOfRows": 5,
-            "pageNo": 1,
+            "startDate": start_date,
+            "endDate": end_date,
         }
 
-        data = await fetch_json(session, GOV_ENDPOINT, params=params, retries=0)
-        items = []
+        try:
+            async with session.get(
+                GOV_ENDPOINT,
+                params=params,
+                timeout=HTTP_TIMEOUT_SECONDS,
+            ) as response:
+                body = await response.text()
 
-        if not data:
-            return items
+                if response.status != 200:
+                    logger.warning(
+                        f"PolicyBriefing HTTP {response.status} | "
+                        f"date={start_date}-{end_date} | body={body[:240]}"
+                    )
+                    return []
 
-        raw_items = data.get("response", {}).get("body", {}).get("items", [])
-        if isinstance(raw_items, dict):
-            raw_items = [raw_items]
+                try:
+                    root = ET.fromstring(body)
+                except ET.ParseError as e:
+                    logger.warning(f"PolicyBriefing XML 파싱 실패 | {e} | body={body[:240]}")
+                    return []
 
-        for item in raw_items:
-            if not isinstance(item, dict):
-                continue
+                result_code = root.findtext(".//resultCode") or root.findtext(".//returnReasonCode") or ""
+                result_msg = root.findtext(".//resultMsg") or root.findtext(".//returnAuthMsg") or ""
 
-            title = first_value(item, ["title", "newsTitle", "mainTitle", "subject"])
-            subtitle = first_value(item, ["subTitle", "subtitle", "sub_title"])
-            content = first_value(item, ["contents", "content", "newsContent", "articleContent", "body"])
-            department = first_value(item, ["deptName", "department", "departmentName", "orgName", "ministry"])
-            pub_date = first_value(item, ["regDate", "approveDate", "approvalDate", "aprvDt", "publishedAt"])
-            link = first_value(item, ["link", "url", "newsUrl", "articleUrl", "originUrl", "newsId"])
+                if result_code and result_code not in {"0", "00"}:
+                    logger.warning(
+                        f"PolicyBriefing API 오류 | code={result_code}, msg={result_msg}, "
+                        f"date={start_date}-{end_date}"
+                    )
+                    return []
 
-            if not title or not link:
-                continue
+                raw_items = root.findall(".//item")
+                items: List[Dict] = []
 
-            url_str = link if str(link).startswith("http") else f"https://www.korea.kr/news/policyNewsView.do?newsId={link}"
+                for raw_item in raw_items:
+                    article = policy_item_to_article(raw_item, topic_name, cfg)
+                    if not article:
+                        continue
 
-            if pub_date and not is_recent(pub_date):
-                continue
-            if is_globally_blocked(title, url_str):
-                continue
+                    if article.get("published_at") and not is_recent(article["published_at"]):
+                        continue
 
-            combined_description = compact_text(
-                " ".join([subtitle, department, content]).strip(),
-                limit=1200,
-            )
+                    if is_globally_blocked(article.get("title", ""), article.get("url", "")):
+                        continue
 
-            items.append({
-                "title": strip_html(title),
-                "description": combined_description,
-                "content": compact_text(content, limit=1200),
-                "url": url_str,
-                "canonical_url": canonicalize_url(url_str),
-                "domain": "korea.kr",
-                "published_at": pub_date,
-                "published_dt": parse_pub_date(pub_date),
-                "normalized_title": normalize_title(title),
-                "short_title": shorten_title(title),
-                "matched_query": query,
-                "source": "PolicyBriefing",
-                "source_name": department,
-                "source_country": "kr",
-            })
+                    items.append(article)
 
-        return items
+                items.sort(
+                    key=lambda x: x.get("published_dt") or datetime.min.replace(tzinfo=UTC),
+                    reverse=True,
+                )
+                return items[:POLICY_RESULT_LIMIT]
+
+        except asyncio.TimeoutError:
+            logger.warning(f"PolicyBriefing 요청 시간 초과 | date={start_date}-{end_date}")
+            return []
+
+        except Exception as e:
+            logger.warning(f"PolicyBriefing 요청 실패 | {e}")
+            return []
 
 
 def dedupe_candidate_pool(items: list[dict]) -> list[dict]:
@@ -845,7 +966,22 @@ def pick_best_articles_for_topic(
         reverse=True,
     )
 
-    return scored[:ARTICLES_PER_TOPIC]
+    picked = []
+    domain_counts = defaultdict(int)
+
+    for item in scored:
+        domain = item.get("domain", "") or "unknown"
+
+        if domain_counts[domain] >= MAX_DOMAIN_PER_TOPIC:
+            continue
+
+        picked.append(item)
+        domain_counts[domain] += 1
+
+        if len(picked) >= ARTICLES_PER_TOPIC:
+            break
+
+    return picked
 
 
 # -----------------------------
@@ -1054,6 +1190,7 @@ async def collect_topic_candidates(
     logger.info(f"[{topic_name}] 수집 시작")
 
     tasks = []
+
     for idx, q in enumerate(cfg["search_keywords"]):
         if idx < NAVER_KEYWORD_LIMIT:
             tasks.append(fetch_naver_news_async(session, q, semaphore))
@@ -1061,8 +1198,8 @@ async def collect_topic_candidates(
         if topic_name in GNEWS_TOPICS and idx < GNEWS_KEYWORD_LIMIT:
             tasks.append(fetch_gnews_async(session, q, semaphore))
 
-        if topic_name in POLICY_TOPICS and idx < POLICY_KEYWORD_LIMIT:
-            tasks.append(fetch_policy_briefing_async(session, q, semaphore))
+    if topic_name in POLICY_TOPICS:
+        tasks.append(fetch_policy_briefing_async(session, topic_name, cfg, semaphore))
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
