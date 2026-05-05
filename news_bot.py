@@ -81,8 +81,9 @@ GLOBAL_BLOCKED_DOMAINS = {
 GLOBAL_BLOCKED_TITLE_KEYWORDS = [
     "기고", "칼럼", "사설", "오피니언", "특강", "강연", "저자를 만나다",
     "시평", "진단", "기자수첩", "데스크", "취재수첩", "만평",
-    "인터뷰", "대담", "해설", "논평", "寄稿", "아침을 열며", "기자의 눈", 
+    "인터뷰", "대담", "해설", "논평", "寄稿", "아침을 열며", "기자의 눈",
     "오늘과 내일", "세상읽기", "시론", "특별기고", "전문가 칼럼", "기획칼럼", "광장", "여론",
+    "NZSI INDEX", "오늘의 경제뉴스", "관전기", "딴지일보", "논객", "의견", "주장",
 ]
 
 TRUSTED_DOMAIN_SCORES = {
@@ -109,6 +110,45 @@ TRUSTED_DOMAIN_SCORES = {
     "thelec.kr": 1,
     "biz.chosun.com": 1,
     "korea.kr": 3,
+}
+
+# 신뢰도/대표성이 약하거나 특정 커뮤니티성·저품질 기사로 자주 잡히는 도메인 감점
+DOMAIN_PENALTIES = {
+    "sjsori.com": -8,
+    "choicenews.co.kr": -3,
+    "bntnews.co.kr": -3,
+    "tokenpost.kr": -2,
+    "ddanzi.com": -8,
+}
+
+# 같은 사건이 제목만 바뀌어 여러 번 뽑히는 문제를 줄이기 위한 스토리 클러스터
+# min_hits 이상 단어가 맞으면 같은 사건으로 보고, 한 클러스터에서는 기본적으로 1개만 선택한다.
+STORY_CLUSTERS = {
+    "경제": [
+        {"id": "korea_stock_index", "terms": ["코스피", "코스닥", "7000", "6900", "증시", "NZSI INDEX"], "min_hits": 2, "max_items": 1},
+        {"id": "us_rate_oil", "terms": ["트럼프", "금리", "인하", "유가", "원유", "인플레이션"], "min_hits": 2, "max_items": 1},
+    ],
+    "정치": [
+        {"id": "han_donghoon_special", "terms": ["한동훈", "특검", "출국금지", "선거개입", "수원지검"], "min_hits": 2, "max_items": 1},
+        {"id": "busan_bukgap_unification", "terms": ["부산 북갑", "하정우", "박민식", "한동훈", "단일화"], "min_hits": 2, "max_items": 1},
+        {"id": "education_superintendent", "terms": ["교육감", "예비후보", "단일화", "충북"], "min_hits": 2, "max_items": 1},
+    ],
+    "사회·생활문화": [
+        {"id": "youth_savings", "terms": ["청년내일저축계좌", "청년", "저축", "신청"], "min_hits": 2, "max_items": 1},
+        {"id": "labor_union_reform", "terms": ["노조", "노동", "교섭", "조례", "시민 보호"], "min_hits": 2, "max_items": 1},
+        {"id": "court_patient_safety", "terms": ["환자", "병원", "추락", "책임", "판결"], "min_hits": 2, "max_items": 1},
+    ],
+    "세계": [
+        {"id": "hormuz_korean_ship", "terms": ["호르무즈", "한국 선박", "한국 화물선", "韓 선박", "트럼프", "이란", "대열", "피격", "박살"], "min_hits": 2, "max_items": 1},
+        {"id": "us_iran_pressure", "terms": ["미국", "이란", "휴전", "압박", "국방", "전쟁"], "min_hits": 2, "max_items": 1},
+        {"id": "russia_ukraine_truce", "terms": ["러시아", "우크라이나", "휴전", "전승절"], "min_hits": 2, "max_items": 1},
+        {"id": "south_china_sea", "terms": ["남중국해", "필리핀", "중국", "모래톱", "자국기"], "min_hits": 2, "max_items": 1},
+    ],
+    "IT·과학": [
+        {"id": "openai_musk", "terms": ["오픈AI", "머스크", "법정", "지분", "비영리"], "min_hits": 2, "max_items": 1},
+        {"id": "ai_chip_supply", "terms": ["AI 칩", "엔비디아", "삼성", "TSMC", "셀레브라스", "GPU"], "min_hits": 2, "max_items": 1},
+        {"id": "ai_model_policy", "terms": ["AI 모델", "모델 테스트", "사이버보안", "백악관", "주정부"], "min_hits": 2, "max_items": 1},
+    ],
 }
 
 # -----------------------------
@@ -145,6 +185,8 @@ TOPIC_CONFIGS = {
         "negative_keywords": [
             "국회", "대통령실", "여야", "외교", "강연", "특강", "교수",
             "포럼", "전시", "공연", "수목원",
+            "NZSI INDEX", "오늘의 경제뉴스", "신청 방법", "극저신용대출",
+            "복지 서비스", "지원 정책",
         ],
         "hard_negative_keywords": [
             "대선", "총선", "공천", "경선", "후보", "지지율", "오세훈",
@@ -180,7 +222,7 @@ TOPIC_CONFIGS = {
         "negative_keywords": [
             "증시", "환율", "금리", "물가", "부동산", "비트코인",
             "강연", "특강", "교수", "미디어학부", "수목원", "공연",
-            "전시", "스마트팩토리",
+            "전시", "스마트팩토리", "국회 관전기", "딴지일보",
         ],
         "hard_negative_keywords": [
             "루마니아", "인디애나", "미국 공화당", "미국 민주당",
@@ -213,13 +255,17 @@ TOPIC_CONFIGS = {
         ],
         "negative_keywords": [
             "증시", "환율", "금리", "물가", "부동산", "비트코인",
-            "연준", "외교", "제재", "AI 모델", "오픈AI", "엔비디아", "장관상", 
+            "연준", "외교", "제재", "AI 모델", "오픈AI", "엔비디아", "장관상",
             "수상", "표창", "공로", "원장", "협약식", "기념식", "러시아산 원유",
+            "윤석열", "김건희", "전 대통령", "대통령 부부", "특검", "정치수사",
+            "메릴랜드", "뉴욕시", "뉴욕", "미국", "주정부", "퍼플 스타 스쿨",
+            "마일", "달러", "카운티",
         ],
         "hard_negative_keywords": [
             "어린이날", "대축제", "문화제", "축사", "개최", "참여",
             "페스티벌", "박람회", "공연", "전시", "가요", "아이돌",
             "후보", "공약", "시장 후보", "출마 선언", "선거운동",
+            "윤석열", "김건희", "대통령 부부", "정치수사",
             "야구", "축구", "농구", "이닝", "홈런", "투수", "타자",
         ],
         "blocked_domains": set(),
@@ -249,7 +295,8 @@ TOPIC_CONFIGS = {
         "negative_keywords": [
             "증시", "환율", "금리", "물가", "부동산", "비트코인",
             "주가", "휘발윳값", "강연", "특강", "교수", "수목원",
-            "공연", "전시",
+            "공연", "전시", "스포츠 투자", "축구단", "골프", "F1",
+            "월드컵 유치", "구단",
         ],
         "hard_negative_keywords": [
             "박람회", "원예", "치유", "태안", "축제", "행사", "기업",
@@ -286,6 +333,7 @@ TOPIC_CONFIGS = {
             "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치",
             "증시", "주가", "코스피", "코스닥", "파업", "임금", "노조",
             "실적", "영업이익", "매출", "투자자", "하락 전환",
+            "특구 유치", "메가특구", "춘천시", "지역전략", "지자체",
         ],
         "hard_negative_keywords": [
             "야구", "축구", "농구", "배구", "골프", "투수", "타자",
@@ -525,7 +573,8 @@ def canonicalize_url(url: str) -> str:
 
 
 def domain_score(url: str) -> int:
-    return TRUSTED_DOMAIN_SCORES.get(get_domain(url), 0)
+    domain = get_domain(url)
+    return TRUSTED_DOMAIN_SCORES.get(domain, 0) + DOMAIN_PENALTIES.get(domain, 0)
 
 
 def is_globally_blocked(title: str, url: str) -> bool:
@@ -1021,6 +1070,27 @@ def unique_hit_count(*hit_lists: list[str]) -> int:
     return len({normalize_text(x) for x in merged if normalize_text(x)})
 
 
+def story_cluster_id(topic_name: str, article: dict) -> Optional[str]:
+    """같은 사건을 제목만 바꿔 중복 선정하지 않기 위한 클러스터 ID를 반환한다."""
+    full = f"{article.get('title', '')} {article.get('description', '')}"
+
+    for cluster in STORY_CLUSTERS.get(topic_name, []):
+        terms = cluster.get("terms", [])
+        min_hits = int(cluster.get("min_hits", 2))
+        hits = keyword_hits(full, terms)
+        if unique_hit_count(hits) >= min_hits:
+            return str(cluster.get("id", "unknown_cluster"))
+
+    return None
+
+
+def story_cluster_limit(topic_name: str, cluster_id: str) -> int:
+    for cluster in STORY_CLUSTERS.get(topic_name, []):
+        if str(cluster.get("id")) == cluster_id:
+            return int(cluster.get("max_items", 1))
+    return 1
+
+
 def topic_gate(topic_name: str, article: dict, cfg: dict) -> tuple[bool, str]:
     """단어 하나만 맞았다고 통과시키지 않고, 핵심어와 보강어를 교차검증한다."""
     title = article.get("title", "")
@@ -1115,6 +1185,10 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
         return -999
 
     score = domain_score(article.get("url", ""))
+
+    cluster_id = story_cluster_id(topic_name, article)
+    if cluster_id:
+        article["story_cluster"] = cluster_id
 
     if article.get("source") == "PolicyBriefing":
         score += 12
@@ -1216,18 +1290,40 @@ def pick_best_articles_for_topic(
 
     picked = []
     domain_counts = defaultdict(int)
+    cluster_counts = defaultdict(int)
 
     for item in scored:
         domain = item.get("domain", "") or "unknown"
 
         if domain_counts[domain] >= MAX_DOMAIN_PER_TOPIC:
+            rejected_reasons[f"domain_limit:{domain}"] += 1
             continue
+
+        cluster_id = item.get("story_cluster") or story_cluster_id(topic_name, item)
+        if cluster_id:
+            limit = story_cluster_limit(topic_name, cluster_id)
+            if cluster_counts[cluster_id] >= limit:
+                rejected_reasons[f"story_duplicate:{cluster_id}"] += 1
+                continue
 
         picked.append(item)
         domain_counts[domain] += 1
+        if cluster_id:
+            cluster_counts[cluster_id] += 1
 
         if len(picked) >= ARTICLES_PER_TOPIC:
             break
+
+    if rejected_reasons:
+        story_or_domain_reasons = {
+            k: v for k, v in rejected_reasons.items()
+            if k.startswith("story_duplicate") or k.startswith("domain_limit")
+        }
+        if story_or_domain_reasons:
+            logger.info(
+                f"[{topic_name}] 선정 단계 제외 요약 | "
+                + ", ".join([f"{k}:{v}" for k, v in sorted(story_or_domain_reasons.items())[:8]])
+            )
 
     return picked
 
@@ -1260,6 +1356,7 @@ def build_summary_prompt(topic_name: str, articles: list[dict]) -> str:
 - 입력 기사에 없는 사실, 숫자, 인명, 기관명, 시점, 전망을 새로 만들지 않는다.
 - 제목에 있는 표현이라도 설명/본문요약재료에서 뒷받침되지 않으면 강한 단정으로 쓰지 않는다.
 - 여러 기사를 억지로 하나의 인과관계로 엮지 않는다.
+- 같은 사건을 다룬 기사들이 여러 개 있으면 같은 내용을 반복하지 말고 대표 이슈 1개로만 정리한다.
 - 기사 간 공통 흐름이 없으면 공통 흐름을 만들지 말고, 각각의 이슈로 분리한다.
 - 원문에 없는 '사상 첫', '역대급', '초비상', '충격', '패닉', '눈앞', '대폭발', '대혼란' 같은 과장 표현을 쓰지 않는다.
 - 수치가 있는 경우 입력 기사에 나온 수치만 사용한다.
