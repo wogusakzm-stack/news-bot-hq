@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
-from typing import Any, List, Dict, Optional
+from typing import Any, List, Dict, Optional, Tuple
 from difflib import SequenceMatcher
 from urllib.parse import urlparse, urlsplit, urlunsplit, parse_qsl, urlencode
 from zoneinfo import ZoneInfo
@@ -75,6 +75,7 @@ GLOBAL_BLOCKED_DOMAINS = {
     "breaknews.com",
     "lecturernews.com",
     "tongilnews.com",
+    "newstown.co.kr",
 }
 
 GLOBAL_BLOCKED_TITLE_KEYWORDS = [
@@ -109,96 +110,191 @@ TRUSTED_DOMAIN_SCORES = {
     "korea.kr": 3,
 }
 
+# -----------------------------
+# 주제별 키워드 교차검증 설정
+# -----------------------------
+# 설계 원칙:
+# 1) search_keywords: API 검색용. 넓게 잡되 과호출 방지를 위해 상위 일부만 사용.
+# 2) core_keywords: 이 주제라고 판단할 최소 핵심어. 최소 1개 이상 필요.
+# 3) positive_keywords/crosscheck_keywords: 점수 보강 및 교차검증용.
+# 4) negative_keywords: 점수 감점용.
+# 5) hard_negative_keywords: 발견 시 해당 주제에서 즉시 제외.
+#    예: "우주 아빠" 야구 기사 → IT·과학 hard_negative의 이닝/투수/야구로 제외.
 TOPIC_CONFIGS = {
     "경제": {
         "search_keywords": [
             "증시", "환율", "금리", "물가", "부동산", "고용", "수출",
             "한국은행", "연준", "원달러", "stock market", "interest rate",
         ],
+        "core_keywords": [
+            "경제", "증시", "코스피", "코스닥", "환율", "원달러", "금리",
+            "기준금리", "국채", "채권", "물가", "소비자물가", "인플레이션",
+            "부동산", "집값", "분양", "고용", "실업", "수출", "수입",
+            "무역", "경상수지", "유가", "원유", "한국은행", "연준",
+        ],
         "positive_keywords": [
-            "코스피", "코스닥", "국채", "채권", "집값", "분양", "인플레이션",
-            "경기침체", "경상수지", "환율", "기준금리", "부동산", "수출", "고용",
+            "시장", "금융", "은행", "채권시장", "외환시장", "투자", "외국인",
+            "기관", "순매수", "경기침체", "경기", "성장률", "소비", "세수",
+            "관세", "무역수지", "분양가", "대출", "부채", "가계대출",
+        ],
+        "crosscheck_keywords": [
+            "상승", "하락", "급등", "급락", "변동성", "마감", "전망",
+            "압박", "둔화", "회복", "침체", "인하", "인상", "동결",
         ],
         "negative_keywords": [
-            "대선", "총선", "국회", "대통령실", "여야", "외교", "도핑",
-            "선수", "강연", "특강", "교수", "포럼", "전시", "공연", "수목원",
+            "국회", "대통령실", "여야", "외교", "강연", "특강", "교수",
+            "포럼", "전시", "공연", "수목원",
+        ],
+        "hard_negative_keywords": [
+            "대선", "총선", "공천", "경선", "후보", "지지율", "오세훈",
+            "한동훈", "이재명", "장동혁", "특검", "선거개입", "선수",
+            "야구", "축구", "농구", "이닝", "홈런", "투수", "도핑",
         ],
         "blocked_domains": set(),
-        "min_score": 7,
+        "min_score": 8,
+        "min_keyword_hits": 2,
     },
     "정치": {
         "search_keywords": [
             "국회", "대통령실", "여야", "정당", "총리", "장관",
             "대선", "총선", "정치권", "청문회",
         ],
+        "core_keywords": [
+            "국회", "대통령", "대통령실", "정부", "총리", "장관", "여야",
+            "민주당", "국민의힘", "개혁신당", "조국혁신당", "정당",
+            "당대표", "원내대표", "법안", "의결", "개각", "청문회",
+            "특검", "선관위", "공천", "후보", "선거", "대선", "총선",
+            "지방선거", "지지율", "정치권",
+        ],
         "positive_keywords": [
-            "법안", "의결", "개각", "지지율", "당대표", "원내대표", "선거",
-            "공천", "외교안보", "정부", "대통령", "국회", "정당",
+            "표결", "발의", "정책", "공약", "출마", "단일화", "탈당",
+            "입당", "수사", "탄핵", "권력", "인사", "외교안보",
+            "서울", "부산", "광주", "인천", "대구", "대전", "울산",
+            "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남",
+        ],
+        "crosscheck_keywords": [
+            "논란", "반발", "합의", "갈등", "요구", "비판", "입장",
+            "발표", "추진", "검토", "처리", "통과",
         ],
         "negative_keywords": [
-            "증시", "환율", "금리", "물가", "부동산", "비트코인", "도핑",
-            "선수", "강연", "특강", "교수", "미디어학부", "수목원", "공연",
+            "증시", "환율", "금리", "물가", "부동산", "비트코인",
+            "강연", "특강", "교수", "미디어학부", "수목원", "공연",
             "전시", "스마트팩토리",
         ],
+        "hard_negative_keywords": [
+            "루마니아", "인디애나", "미국 공화당", "미국 민주당",
+            "미 대선", "미국 경선", "유럽 연정", "트럼프 경선",
+            "선수", "야구", "축구", "농구", "이닝", "홈런", "도핑",
+        ],
         "blocked_domains": set(),
-        "min_score": 7,
+        "min_score": 8,
+        "min_keyword_hits": 2,
     },
     "사회·생활문화": {
         "search_keywords": [
             "사건", "사고", "법원", "검찰", "경찰", "교육", "건강",
-            "복지", "육아", "생활문화", "노동", "산재", "재난", "화재",
-            "교통사고", "보건",
+            "복지", "노동", "산재", "재난", "화재", "교통사고", "보건",
+        ],
+        "core_keywords": [
+            "사건", "사고", "법원", "대법원", "검찰", "경찰", "수사",
+            "기소", "판결", "재판", "구속", "피해", "사망", "부상",
+            "병원", "보건", "의료", "건강", "복지", "교육", "학교",
+            "노동", "노조", "산재", "재난", "화재", "교통사고", "범죄",
         ],
         "positive_keywords": [
-            "사고", "판결", "기소", "수사", "병원", "보건", "양육",
-            "교육", "복지", "생활", "노동", "산재", "재난", "화재",
+            "안전", "입원", "환자", "장애", "아동", "청년", "노인",
+            "돌봄", "지원", "조례", "제도", "시민", "생활", "주거",
+            "노동자", "사업장", "위험", "예방", "공공", "센터",
+        ],
+        "crosscheck_keywords": [
+            "발생", "적발", "조사", "제기", "추진", "지원", "개선",
+            "강화", "확대", "논의", "대응", "보호",
         ],
         "negative_keywords": [
-            "증시", "환율", "금리", "물가", "부동산", "비트코인", "연준",
-            "대선", "총선", "대통령실", "외교", "제재", "AI 모델", "오픈AI",
-            "엔비디아", "러시아산 원유", "도핑", "선수",
-            "어린이날", "대축제", "문화제", "후보", "공약", "시장 후보",
-            "축사", "개최", "참여", "특강", "행사", "페스티벌",
+            "증시", "환율", "금리", "물가", "부동산", "비트코인",
+            "연준", "외교", "제재", "AI 모델", "오픈AI", "엔비디아",
+            "러시아산 원유",
         ],
-        "blocked_domains": set(),
-        "min_score": 7,
-    },
-    "세계": {
-        "search_keywords": [
-            "국제", "미국", "중국", "일본", "유럽", "중동", "우크라이나",
-            "러시아", "EU", "대만", "international news", "world politics",
-        ],
-        "positive_keywords": [
-            "백악관", "중동", "휴전", "제재", "정상회담", "외신", "나토",
-            "가자", "이스라엘", "트럼프", "바이든", "국제", "전쟁", "외교",
-        ],
-        "negative_keywords": [
-            "증시", "환율", "금리", "물가", "부동산", "비트코인", "주가",
-            "휘발윳값", "도핑", "선수", "윔블던", "야구", "축구", "농구",
-            "강연", "특강", "교수", "수목원", "공연", "전시",
+        "hard_negative_keywords": [
+            "어린이날", "대축제", "문화제", "축사", "개최", "참여",
+            "페스티벌", "박람회", "공연", "전시", "가요", "아이돌",
+            "후보", "공약", "시장 후보", "출마 선언", "선거운동",
+            "야구", "축구", "농구", "이닝", "홈런", "투수", "타자",
         ],
         "blocked_domains": set(),
         "min_score": 8,
+        "min_keyword_hits": 2,
+    },
+    "세계": {
+        "search_keywords": [
+            "미국", "중국", "일본", "유럽", "중동", "우크라이나",
+            "러시아", "EU", "대만", "국제", "world politics",
+        ],
+        "core_keywords": [
+            "미국", "중국", "일본", "유럽", "중동", "우크라이나", "러시아",
+            "EU", "대만", "북한", "이란", "이스라엘", "가자", "나토",
+            "백악관", "트럼프", "바이든", "시진핑", "푸틴", "정상회담",
+            "외교", "제재", "전쟁", "휴전", "분쟁", "국경", "국제사회",
+        ],
+        "positive_keywords": [
+            "외신", "안보리", "유엔", "협상", "압박", "군사", "핵",
+            "미사일", "관세", "동맹", "무역분쟁", "호르무즈", "원유",
+            "공습", "회담", "대사", "정부", "의회",
+        ],
+        "crosscheck_keywords": [
+            "발언", "경고", "합의", "갈등", "긴장", "압박", "대응",
+            "봉쇄", "공격", "철수", "파병", "제안", "비판",
+        ],
+        "negative_keywords": [
+            "증시", "환율", "금리", "물가", "부동산", "비트코인",
+            "주가", "휘발윳값", "강연", "특강", "교수", "수목원",
+            "공연", "전시",
+        ],
+        "hard_negative_keywords": [
+            "박람회", "원예", "치유", "태안", "축제", "행사", "기업",
+            "수목원", "어린이날", "문화제", "야구", "축구", "농구",
+            "이닝", "홈런", "투수", "선수", "도핑",
+        ],
+        "blocked_domains": set(),
+        "min_score": 9,
+        "min_keyword_hits": 2,
     },
     "IT·과학": {
         "search_keywords": [
             "AI", "인공지능", "반도체", "오픈AI", "엔비디아", "로봇",
-            "양자", "우주", "테크", "스마트팩토리",
-            "artificial intelligence", "semiconductor",
+            "양자", "우주", "테크", "artificial intelligence", "semiconductor",
+        ],
+        "core_keywords": [
+            "AI", "인공지능", "생성형 AI", "챗GPT", "오픈AI", "LLM",
+            "모델", "데이터센터", "GPU", "엔비디아", "반도체", "파운드리",
+            "삼성전자", "SK하이닉스", "로봇", "로보틱스", "자율주행",
+            "양자", "우주", "위성", "항공우주", "과학", "연구", "기술",
+            "바이오", "의료 AI", "UNIST", "KAIST",
         ],
         "positive_keywords": [
-            "챗GPT", "LLM", "GPU", "파운드리", "삼성전자", "SK하이닉스",
-            "자율주행", "생성형 AI", "모델", "데이터센터", "로보틱스",
-            "반도체", "과학", "우주",
+            "개발", "연구진", "논문", "상용화", "출시", "도입", "성능",
+            "알고리즘", "칩", "서버", "클라우드", "빅테크", "보안",
+            "데이터", "소프트웨어", "하드웨어", "스타트업", "투자 유치",
+        ],
+        "crosscheck_keywords": [
+            "자동화", "학습", "추론", "설계", "검증", "실험", "분석",
+            "플랫폼", "서비스", "시스템", "공개", "발표", "협력",
         ],
         "negative_keywords": [
-            "총선", "대선", "국회", "여야", "외교", "도핑", "선수", "수목원",
-            "전시", "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치",
+            "총선", "대선", "국회", "여야", "외교", "수목원", "전시",
+            "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치",
             "증시", "주가", "코스피", "코스닥", "파업", "임금", "노조",
             "실적", "영업이익", "매출", "투자자", "하락 전환",
         ],
+        "hard_negative_keywords": [
+            "야구", "축구", "농구", "배구", "골프", "투수", "타자",
+            "이닝", "홈런", "선발", "구단", "감독", "선수", "리그",
+            "시즌", "타율", "방어율", "우주 아빠", "도핑",
+            "노사", "파업", "임금협상", "주가", "증시", "코스피", "코스닥",
+        ],
         "blocked_domains": set(),
-        "min_score": 8,
+        "min_score": 9,
+        "min_keyword_hits": 2,
     },
 }
 
@@ -649,7 +745,7 @@ async def fetch_gnews_async(
 
         params = {
             "q": query,
-            "token": GNEWS_API_KEY,
+            "apikey": GNEWS_API_KEY,
             "lang": "en",
             "max": 10,
             "in": "title,description,content",
@@ -782,6 +878,11 @@ async def fetch_policy_briefing_async(
 ) -> List[Dict]:
     async with semaphore:
         if not GOV_API_KEY or not GOV_ENDPOINT:
+            logger.warning(
+                f"PolicyBriefing 환경변수 누락 | "
+                f"GOV_API_KEY={'있음' if GOV_API_KEY else '없음'}, "
+                f"GOV_ENDPOINT={'있음' if GOV_ENDPOINT else '없음'}"
+            )
             return []
 
         start_date, end_date = policy_date_range(MAX_ARTICLE_AGE_DAYS)
@@ -824,6 +925,17 @@ async def fetch_policy_briefing_async(
                     return []
 
                 raw_items = root.findall(".//item")
+                if not raw_items:
+                    raw_items = [
+                        elem for elem in root.iter()
+                        if str(elem.tag).lower().endswith("item")
+                    ]
+
+                logger.info(
+                    f"[{topic_name}] PolicyBriefing 응답 확인 | "
+                    f"items={len(raw_items)}, date={start_date}-{end_date}"
+                )
+
                 items: List[Dict] = []
 
                 for raw_item in raw_items:
@@ -885,12 +997,120 @@ def dedupe_candidate_pool(items: list[dict]) -> list[dict]:
 # -----------------------------
 # 필터링 및 점수화
 # -----------------------------
+def keyword_hits(text: str, keywords: list[str]) -> list[str]:
+    norm = normalize_text(text)
+    hits = []
+    for kw in keywords:
+        kw_norm = normalize_text(kw)
+        if kw_norm and kw_norm in norm:
+            hits.append(kw)
+    return hits
+
+
+def keyword_hits_in_title_and_desc(article: dict, keywords: list[str]) -> tuple[list[str], list[str]]:
+    title = article.get("title", "")
+    desc = article.get("description", "")
+    return keyword_hits(title, keywords), keyword_hits(desc, keywords)
+
+
+def unique_hit_count(*hit_lists: list[str]) -> int:
+    merged = []
+    for hits in hit_lists:
+        merged.extend(hits)
+    return len({normalize_text(x) for x in merged if normalize_text(x)})
+
+
+def topic_gate(topic_name: str, article: dict, cfg: dict) -> tuple[bool, str]:
+    """단어 하나만 맞았다고 통과시키지 않고, 핵심어와 보강어를 교차검증한다."""
+    title = article.get("title", "")
+    desc = article.get("description", "")
+    full = f"{title} {desc}"
+
+    # 글로벌 차단은 기사 제목/도메인 기준으로 선제 배제
+    if is_globally_blocked(title, article.get("url", "")):
+        return False, "global_blocked"
+
+    hard_hits = keyword_hits(full, cfg.get("hard_negative_keywords", []))
+    if hard_hits:
+        return False, f"hard_negative:{','.join(hard_hits[:3])}"
+
+    title_core, desc_core = keyword_hits_in_title_and_desc(article, cfg.get("core_keywords", []))
+    title_pos, desc_pos = keyword_hits_in_title_and_desc(article, cfg.get("positive_keywords", []))
+    title_cross, desc_cross = keyword_hits_in_title_and_desc(article, cfg.get("crosscheck_keywords", []))
+
+    core_count = unique_hit_count(title_core, desc_core)
+    total_count = unique_hit_count(title_core, desc_core, title_pos, desc_pos, title_cross, desc_cross)
+    min_hits = int(cfg.get("min_keyword_hits", 2))
+
+    if core_count == 0:
+        return False, "no_core_keyword"
+
+    if total_count < min_hits:
+        return False, f"weak_crosscheck:{total_count}/{min_hits}"
+
+    # 검색어가 너무 넓은 주제 보정
+    # 세계: '국제' 하나만으로 국내 행사/박람회가 들어오는 문제 방지
+    if topic_name == "세계":
+        strong_world_hits = keyword_hits(
+            full,
+            [
+                "미국", "중국", "일본", "유럽", "중동", "우크라이나", "러시아",
+                "EU", "대만", "북한", "이란", "이스라엘", "가자", "나토",
+                "백악관", "트럼프", "바이든", "시진핑", "푸틴", "정상회담",
+                "외교", "제재", "전쟁", "휴전", "분쟁", "호르무즈", "유엔",
+            ],
+        )
+        if not strong_world_hits:
+            return False, "world_without_strong_anchor"
+
+    # IT: '우주' 같은 다의어는 과학/기술 보강어가 있어야 통과
+    if topic_name == "IT·과학":
+        sports_noise = keyword_hits(full, ["야구", "투수", "타자", "이닝", "홈런", "구단", "감독", "선수", "리그"])
+        if sports_noise:
+            return False, f"it_sports_noise:{','.join(sports_noise[:3])}"
+
+        broad_only_hits = keyword_hits(full, ["우주", "모델", "기술"])
+        tech_anchor_hits = keyword_hits(
+            full,
+            [
+                "AI", "인공지능", "챗GPT", "오픈AI", "LLM", "반도체", "GPU",
+                "엔비디아", "로봇", "양자", "위성", "항공우주", "연구",
+                "논문", "개발", "데이터센터", "알고리즘", "바이오", "의료 AI",
+            ],
+        )
+        if broad_only_hits and not tech_anchor_hits:
+            return False, "it_broad_keyword_only"
+
+    # 정치: 국내 정치 브리핑이므로 해외 정당/선거만 있는 기사는 세계로 보내는 게 낫다
+    if topic_name == "정치":
+        domestic_hits = keyword_hits(
+            full,
+            [
+                "한국", "국회", "대통령실", "대통령", "정부", "총리", "장관",
+                "민주당", "국민의힘", "개혁신당", "조국혁신당", "선관위",
+                "특검", "서울", "부산", "광주", "인천", "대구", "대전",
+                "울산", "경기", "강원", "충북", "충남", "전북", "전남",
+                "경북", "경남", "제주",
+            ],
+        )
+        foreign_only_hits = keyword_hits(full, ["루마니아", "인디애나", "미국", "유럽", "트럼프", "공화당", "민주당 경선"])
+        if foreign_only_hits and not domestic_hits:
+            return False, "foreign_politics"
+
+    return True, "ok"
+
+
 def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
     title = normalize_text(article.get("title", ""))
     desc = normalize_text(article.get("description", ""))
     full = f"{title} {desc}".strip()
 
     if article.get("domain", "") in cfg.get("blocked_domains", set()):
+        return -999
+
+    passed, reason = topic_gate(topic_name, article, cfg)
+    article["topic_gate"] = reason
+    if not passed:
         return -999
 
     score = domain_score(article.get("url", ""))
@@ -901,18 +1121,22 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
     if article.get("source") == "GNews":
         score += 9 if topic_name in GNEWS_TOPICS else 4
 
+    core_title_hits, core_desc_hits = keyword_hits_in_title_and_desc(article, cfg.get("core_keywords", []))
+    pos_title_hits, pos_desc_hits = keyword_hits_in_title_and_desc(article, cfg.get("positive_keywords", []))
+    cross_title_hits, cross_desc_hits = keyword_hits_in_title_and_desc(article, cfg.get("crosscheck_keywords", []))
+
+    score += len(core_title_hits) * 6
+    score += len(core_desc_hits) * 3
+    score += len(pos_title_hits) * 4
+    score += len(pos_desc_hits) * 2
+    score += len(cross_title_hits) * 2
+    score += len(cross_desc_hits) * 1
+
     matched_query = normalize_text(article.get("matched_query", ""))
     if matched_query:
         if matched_query in title:
-            score += 5
-        elif matched_query in desc:
-            score += 3
-
-    for kw in cfg.get("positive_keywords", []):
-        kw_norm = normalize_text(kw)
-        if kw_norm in title:
             score += 4
-        elif kw_norm in desc:
+        elif matched_query in desc:
             score += 2
 
     for kw in cfg.get("negative_keywords", []):
@@ -922,9 +1146,15 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
         elif kw_norm in desc:
             score -= 4
 
-    topic_words = cfg.get("search_keywords", []) + cfg.get("positive_keywords", [])
-    if not any(normalize_text(kw) in full for kw in topic_words):
-        score -= 6
+    # 제목에 핵심어가 있으면 우선도 상승. 설명에만 스치듯 있으면 과도한 상승 방지.
+    if core_title_hits:
+        score += 4
+
+    article["topic_debug"] = (
+        f"core={core_title_hits + core_desc_hits[:3]}, "
+        f"pos={pos_title_hits + pos_desc_hits[:3]}, "
+        f"cross={cross_title_hits + cross_desc_hits[:3]}"
+    )
 
     return score
 
@@ -940,23 +1170,40 @@ def pick_best_articles_for_topic(
     seen_urls = set(seen_data.get("urls", []))
     seen_titles = list(seen_data.get("titles", []))
     scored = []
+    rejected_reasons = defaultdict(int)
 
     for item in dedupe_candidate_pool(candidates):
         url = item.get("canonical_url", "")
         title = item.get("normalized_title", "")
 
         if (url and url in used_urls) or (title and is_similar_title(title, used_titles)):
+            rejected_reasons["used_duplicate"] += 1
             continue
 
         if not FORCE_TEST_MODE:
             if (url and url in seen_urls) or (title and is_similar_title(title, seen_titles)):
+                rejected_reasons["seen_duplicate"] += 1
                 continue
+
+        passed, gate_reason = topic_gate(topic_name, item, cfg)
+        if not passed:
+            rejected_reasons[gate_reason] += 1
+            continue
 
         score = score_article_for_topic(topic_name, item, cfg)
         item["topic_score"] = score
+        item["topic_gate"] = gate_reason
 
         if score >= cfg.get("min_score", 7):
             scored.append(item)
+        else:
+            rejected_reasons["low_score"] += 1
+
+    if rejected_reasons:
+        logger.info(
+            f"[{topic_name}] 필터 제외 요약 | "
+            + ", ".join([f"{k}:{v}" for k, v in sorted(rejected_reasons.items())[:8]])
+        )
 
     scored.sort(
         key=lambda x: (
