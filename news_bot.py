@@ -61,9 +61,10 @@ TRUSTED_DOMAIN_SCORES = {
     "thelec.kr": 1, "biz.chosun.com": 1,
 }
 
+# GNews를 위한 영어 키워드 추가
 TOPIC_CONFIGS = {
     "경제": {
-        "search_keywords": ["증시", "환율", "금리", "물가", "부동산", "고용", "수출", "한국은행", "연준", "원달러"],
+        "search_keywords": ["증시", "환율", "금리", "물가", "부동산", "고용", "수출", "한국은행", "연준", "원달러", "stock market", "interest rate"],
         "positive_keywords": ["코스피", "코스닥", "국채", "채권", "집값", "분양", "인플레이션", "경기침체", "경상수지", "환율", "기준금리", "부동산", "수출", "고용"],
         "negative_keywords": ["대선", "총선", "국회", "대통령실", "여야", "외교", "도핑", "선수", "강연", "특강", "교수", "포럼", "전시", "공연", "수목원"],
         "blocked_domains": set(),
@@ -84,14 +85,14 @@ TOPIC_CONFIGS = {
         "min_score": 7,
     },
     "세계": {
-        "search_keywords": ["국제", "미국", "중국", "일본", "유럽", "중동", "우크라이나", "러시아", "EU", "대만"],
+        "search_keywords": ["국제", "미국", "중국", "일본", "유럽", "중동", "우크라이나", "러시아", "EU", "대만", "international news", "world politics"],
         "positive_keywords": ["백악관", "중동", "휴전", "제재", "정상회담", "외신", "나토", "가자", "이스라엘", "트럼프", "바이든", "국제", "전쟁", "외교"],
         "negative_keywords": ["증시", "환율", "금리", "물가", "부동산", "비트코인", "주가", "휘발윳값", "도핑", "선수", "윔블던", "야구", "축구", "농구", "강연", "특강", "교수", "수목원", "공연", "전시"],
         "blocked_domains": set(),
         "min_score": 8,
     },
     "IT·과학": {
-        "search_keywords": ["AI", "인공지능", "반도체", "오픈AI", "엔비디아", "로봇", "양자", "우주", "테크", "스마트팩토리"],
+        "search_keywords": ["AI", "인공지능", "반도체", "오픈AI", "엔비디아", "로봇", "양자", "우주", "테크", "스마트팩토리", "artificial intelligence", "semiconductor"],
         "positive_keywords": ["챗GPT", "LLM", "GPU", "파운드리", "삼성전자", "SK하이닉스", "자율주행", "생성형 AI", "모델", "데이터센터", "로보틱스", "반도체", "과학", "우주"],
         "negative_keywords": ["총선", "대선", "국회", "여야", "외교", "도핑", "선수", "수목원", "전시", "공연", "저자를 만나다", "특강", "기고", "칼럼", "정치"],
         "blocked_domains": set(),
@@ -100,7 +101,13 @@ TOPIC_CONFIGS = {
 }
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s", force=True)
+# 파일과 콘솔 모두에 로깅
+logging.basicConfig(
+    level=logging.INFO, 
+    format="%(asctime)s | %(levelname)s | %(message)s", 
+    force=True,
+    handlers=[logging.StreamHandler(), logging.FileHandler("news_bot.log", encoding="utf-8")]
+)
 logger = logging.getLogger(__name__)
 
 # 동시성 제어 세마포어 (API 서버 과부하 방지)
@@ -304,8 +311,9 @@ def score_article_for_topic(topic_name: str, article: dict, cfg: dict) -> int:
 
     score = domain_score(article.get("url", ""))
     
-    # 정부 정책 브리핑 가산점
-    if article.get("source") == "PolicyBriefing": score += 10 
+    # 가산점 팍팍! 정책 브리핑과 외신이 버려지지 않도록
+    if article.get("source") == "PolicyBriefing": score += 15 
+    if article.get("source") == "GNews": score += 5
 
     matched_query = normalize_text(article.get("matched_query", ""))
     if matched_query:
@@ -405,10 +413,19 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
         tasks.append(fetch_policy_briefing_async(session, q))
     
     results = await asyncio.gather(*tasks)
+    
+    # 수집 현황 로그 출력 (누가 범인인지 잡자!)
+    naver_count = sum(len(r) for r in results[0::3])
+    gnews_count = sum(len(r) for r in results[1::3])
+    gov_count = sum(len(r) for r in results[2::3])
+    logger.info(f"[{topic_name}] 수집완료 - Naver:{naver_count}, GNews:{gnews_count}, Policy:{gov_count}")
+
     candidates = [item for sublist in results for item in sublist]
     
     fresh_articles = pick_best_articles_for_topic(topic_name, candidates, cfg, seen_data, used_urls, used_titles)
-    if not fresh_articles: return False
+    if not fresh_articles: 
+        logger.info(f"[{topic_name}] 전송할 새 기사 없음")
+        return False
 
     summary = await summarize_topic_async(topic_name, fresh_articles)
     links_section = "\n원문\n" + "\n".join([f"{i}. {html.escape(a['short_title'])}\n{a['url']}\n" for i, a in enumerate(fresh_articles[:4], 1)])
