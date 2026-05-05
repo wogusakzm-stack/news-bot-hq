@@ -205,7 +205,7 @@ def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]):
         
         # 한국 시간(KST) 기록
         kst = timezone(timedelta(hours=9))
-        now_str = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S")
+        now_str = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%m-%d %H:%M")
         
         # 기사 제목들 합치기 (분석용)
         titles = " | ".join([a.get('title', '') for a in articles])
