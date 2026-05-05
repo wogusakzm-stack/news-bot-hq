@@ -6,6 +6,7 @@ import html
 import logging
 import asyncio
 import aiohttp
+import gspread
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
 from typing import Any, List, Dict, Set
@@ -29,6 +30,10 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 GNEWS_API_KEY = os.getenv("GNEWS_API_KEY")
 GOV_API_KEY = os.getenv("GOV_API_KEY")
 GOV_ENDPOINT = os.getenv("GOV_ENDPOINT")
+
+# 구글 시트 연동을 위한 환경 변수 (GitHub Secrets에서 가져옴)
+GOOGLE_SHEETS_JSON = os.getenv("GOOGLE_SHEETS_JSON")
+SHEET_ID = os.getenv("SHEET_ID")
 
 SEEN_FILE = "seen_urls.json"
 
@@ -182,6 +187,35 @@ def is_globally_blocked(title: str, url: str) -> bool:
     if get_domain(url) in GLOBAL_BLOCKED_DOMAINS: return True
     norm_title = normalize_text(title)
     return any(kw.lower() in norm_title for kw in GLOBAL_BLOCKED_TITLE_KEYWORDS)
+
+# -----------------------------
+# 구글 시트 저장 유틸리티
+# -----------------------------
+def save_to_google_sheet(topic_name: str, summary: str, articles: list[dict]):
+    """수집된 요약본을 구글 시트에 기록합니다."""
+    try:
+        if not GOOGLE_SHEETS_JSON or not SHEET_ID:
+            logger.warning("구글 시트 환경 변수 누락. 시트 저장을 건너뜁니다.")
+            return
+        
+        creds_dict = json.loads(GOOGLE_SHEETS_JSON)
+        gc = gspread.service_account_from_dict(creds_dict)
+        sh = gc.open_by_key(SHEET_ID)
+        worksheet = sh.get_worksheet(0)
+        
+        # 한국 시간(KST) 기록
+        kst = timezone(timedelta(hours=9))
+        now_str = datetime.now(kst).strftime("%Y-%m-%d %H:%M:%S")
+        
+        # 기사 제목들 합치기 (분석용)
+        titles = " | ".join([a.get('title', '') for a in articles])
+        
+        # 새 행으로 추가: [기록시간, 분야, 요약내용, 참고기사제목들]
+        worksheet.append_row([now_str, topic_name, summary, titles])
+        logger.info(f"[{topic_name}] 구글 시트 저장 완료! (๑>ᴗ<๑)")
+        
+    except Exception as e:
+        logger.error(f"구글 시트 저장 실패: {e}")
 
 # -----------------------------
 # 파일 캐시 처리
@@ -426,12 +460,17 @@ async def run_topic_async(session, topic_name, cfg, seen_data, used_urls, used_t
     summary = await summarize_topic_async(topic_name, fresh_articles)
     links_section = "\n원문\n" + "\n".join([f"{i}. {html.escape(a['short_title'])}\n{a['url']}\n" for i, a in enumerate(fresh_articles[:4], 1)])
     
+    # 텔레그램용 KST 시간 포맷
     kst = timezone(timedelta(hours=9))
     now_kst = datetime.now(kst).strftime("%m-%d %H:%M")
     
     message = f"📰 <b>{html.escape(topic_name)}</b>\n{now_kst}\n\n{html.escape(summary)}\n{links_section}"
     
+    # 텔레그램 배송
     await send_telegram_async(session, message)
+    
+    # 구글 시트에 데이터 기록 (기억의 도서관!)
+    save_to_google_sheet(topic_name, summary, fresh_articles)
     
     for article in fresh_articles:
         if u := article.get("canonical_url"): used_urls.add(u)
