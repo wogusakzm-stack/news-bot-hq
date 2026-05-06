@@ -1,0 +1,16 @@
+name: Cron Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print event and time
+        run: |
+          echo "EVENT: ${{ github.event_name }}"
+          echo "UTC: $(date -u)"
+          echo "KST: $(TZ=Asia/Seoul date)"
