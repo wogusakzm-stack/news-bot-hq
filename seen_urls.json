@@ -1,7 +1,5 @@
 {
   "urls": [
-    "https://www.news1.kr/society/labor/6223495",
-    "https://www.news1.kr/sports/basketball/6217592",
     "https://www.news1.kr/world/asia-australia/6224090",
     "https://www.news1.kr/world/europe/6160261",
     "https://www.news1.kr/world/europe/6162066",
@@ -714,6 +712,7 @@
     "https://www.newspim.com/news/view/20260731001548",
     "https://www.newspim.com/news/view/20260802000001",
     "https://www.newspim.com/news/view/20260803000186",
+    "https://www.newspim.com/news/view/20260803000392",
     "https://www.newspost.kr/news/articleView.html?idxno=224033",
     "https://www.newsquest.co.kr/news/articleView.html?idxno=266397",
     "https://www.newsquest.co.kr/news/articleView.html?idxno=267470",
@@ -1428,6 +1427,7 @@
     "https://www.seoul.co.kr/news/society/2026/07/20/20260720500239",
     "https://www.seoul.co.kr/news/society/2026/07/23/20260723500104",
     "https://www.seoul.co.kr/news/society/2026/07/27/20260727500272",
+    "https://www.seoul.co.kr/news/society/2026/08/03/20260803500064",
     "https://www.seoul.co.kr/news/society/accident/2026/06/26/20260626500277",
     "https://www.seoul.co.kr/news/society/accident/2026/07/17/20260717500121",
     "https://www.seoul.co.kr/news/society/law/2026/05/17/20260517500088",
@@ -3002,9 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260730164613"
   ],
   "titles": [
-    "이란 재봉쇄 위협에도 호르무즈 해협 교통량 회복 조짐",
-    "이란 전쟁 시계제로인데 美 중동 서 스텔스전투기 f-22 철수",
-    "이란 전쟁 장기 수렁에 빠져들고 있다 사면초가 트럼프",
     "이란 전쟁 종전 멀어지자 미·일·영·독 채권 시장 패닉 금리 폭",
     "이란 전쟁 지속 사드 주문 4배 증가 등으로 美 무기 제조업체들 매출",
     "이란 전쟁 청구서 202조원 미국인 덮친 유가· 물가 후폭풍",
@@ -3297,6 +3294,7 @@
     "인재가 서울의 핵심 오세훈 서울시장 ai서울 테크 연구지원사업 연구",
     "인제대-美오하이오주립대 보안형 로컬 ai 활용 국제 공동연구 세미나",
     "인챈티드툴스 인간의 삶 도와줄 로봇 집중",
+    "인천 검단구 어린이·사회 복지 급식관리지원센터 위탁기관 18일까지 접",
     "인천 국회의원 보선 與 지역 스킨십 野 단일화 신경전",
     "인천 남청라나들목 인근 다중 추돌사고 1시간여 출근길 정체",
     "인천 물류센터서 60대 작업자 지게발 깔렸다 현장 사망",
@@ -3539,6 +3537,7 @@
     "전·현직 대통령 선거 대리전 지지층 결집 주목",
     "전·현직 대통령의 2시간 회동 통합 메시지에 정치권은 온도차",
     "전·현직 대통령이 흔든 지방선거 그 중 최고는 박근혜 효과",
+    "전격시사 김성태 국민의힘 전 원내대표 - 선관위 부실 규명 특검",
     "전공노 사상 초유 지방선거 투표용지 부족 사태 비판",
     "전공의노조 두 번째 교섭 시작 한림대학교의료원과 상견례",
     "전공의노조 한림대의료원과 두 번째 단체교섭 상견례 6월 19일 본교섭",
@@ -4100,6 +4099,7 @@
     "중동 긴장에 유가 100달러 재돌파 아시아 증시 휘청",
     "중동 리스크에 출렁이는 환율 최대 18 2원 널뛰기",
     "중동 봉쇄 쇼크③ 백악관 비공개 연쇄 회담과 트럼프式 위기론",
+    "중동 분쟁에 아덴만 해적 다시 활개 정부 우리 선박 경계 강화",
     "중동 사태 속 원유 다변화 韓·日 고비용 우방국 vs 中·印 저가 제",
     "중동 사태 악화에 서울 휘발유·경윳값 한 달만에 다시 상승",
     "중동 사태에 소비자 물가 급등 어디까지",
