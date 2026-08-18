@@ -1,7 +1,5 @@
 {
   "urls": [
-    "https://www.newsis.com/view/NISX20260615_0003668854",
-    "https://www.newsis.com/view/NISX20260615_0003668922",
     "https://www.newsis.com/view/NISX20260615_0003669076",
     "https://www.newsis.com/view/NISX20260615_0003669354",
     "https://www.newsis.com/view/NISX20260615_0003669950",
@@ -657,6 +655,7 @@
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1533724",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1533863",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1534147",
+    "https://www.obsnews.co.kr/news/articleView.html?idxno=1534447",
     "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx",
     "https://www.pennmike.com/news/articleView.html?idxno=120419",
     "https://www.pennmike.com/news/articleView.html?idxno=120454",
@@ -1718,6 +1717,7 @@
     "https://www.tokenpost.kr/news/cryptocurrency/392115",
     "https://www.tokenpost.kr/news/cryptocurrency/392147",
     "https://www.tokenpost.kr/news/cryptocurrency/392177",
+    "https://www.tokenpost.kr/news/cryptocurrency/392514",
     "https://www.tokenpost.kr/news/economy/359702",
     "https://www.tokenpost.kr/news/economy/359798",
     "https://www.tokenpost.kr/news/economy/360447",
@@ -3002,9 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260818085940"
   ],
   "titles": [
-    "인천시 인천반도체포럼 기술교류회 개최 첨단패키징 동향 한눈에",
-    "인천시 폭염 대비 취약 어르신 보호 대응반 가동 안전망 강화",
-    "인천시 폭염기 산재 예방 총력전 현장 안전문화 확산 나선다",
     "인천시·경기도당위원장 경선 여야 모두 당권투쟁 연장선",
     "인천시민단체 대통령실 에 수도권 대체매립지 전담기구 설치해야",
     "인천시의회 제10대 의회 개원 맞아 의정 지원 교육",
@@ -3075,6 +3072,7 @@
     "입국 사흘 만에 목숨 잃었다 라오스 계절노동자 사망 진상규명 촉구",
     "입틀막법 폐지에 2만 5000명 서명 국민특검도 촉구",
     "잇단 산재 사망사고 한화오션에코텍·협력업체 대표 입건",
+    "있으나 마나 이주노동자 유족 지원 조례 먹통",
     "자기 왼팔 자르고 산재 5억7000만원 노린 30대의 최후",
     "자기 팔 절단 산재 부정수급 30대 징역형 집행유예",
     "자녀 돌봄 필요할 때 1 2주 단기 육아휴직 20일부터 시행",
@@ -3420,6 +3418,7 @@
     "정성호 법무부 장관 이 대통령에 사의 표명",
     "정성호 법무장관 검경 합수본 유지 방식 고민 수사역량 지원 틀 필요",
     "정성호 법무장관 사퇴 의지 재확인 與 보완수사권 폐지안 30일 본회의",
+    "정성호 법무장관 신속한 사표 수리 요청 이 대통령 후속 인사 때까",
     "정성호 보완수사권 가장 중요한 건 피해자 억울하지 않아야",
     "정성호 보완수사권 폐지 李대통령에 거부권 건의 안 해",
     "정성호 사의 재부각 보완수사 폐지 앞둔 검찰 지휘 공백 우려",
@@ -3609,6 +3608,7 @@
     "조국혁신당 대표 선거 신장식 단독 출마 23일부터 투표",
     "조국혁신당 대표 선출된 신장식 지금 진짜 개혁정당은 조국혁신당 적",
     "조국혁신당 대표에 신장식",
+    "조국혁신당 도당위원장 선거···강경숙 의원 단독 출마",
     "조국혁신당 서울서 전국당원대회 수도권·강원권 경청간담회 개최",
     "조국혁신당 신임 원내대표에 김준형 의원 정치공학적 맥락의 합당·",
     "조국혁신당 원내대표에 외교원장 지낸 김준형",
