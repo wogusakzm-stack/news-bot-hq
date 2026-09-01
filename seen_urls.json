@@ -1,7 +1,5 @@
 {
   "urls": [
-    "https://www.newspim.com/news/view/20260518001245",
-    "https://www.newspim.com/news/view/20260519000134",
     "https://www.newspim.com/news/view/20260519001358",
     "https://www.newspim.com/news/view/20260520001155",
     "https://www.newspim.com/news/view/20260520001157",
@@ -167,6 +165,7 @@
     "https://www.newspim.com/news/view/20260828000035",
     "https://www.newspim.com/news/view/20260828000915",
     "https://www.newspim.com/news/view/20260901000405",
+    "https://www.newspim.com/news/view/20260901001238",
     "https://www.newspost.kr/news/articleView.html?idxno=224033",
     "https://www.newsquest.co.kr/news/articleView.html?idxno=266397",
     "https://www.newsquest.co.kr/news/articleView.html?idxno=267470",
@@ -928,6 +927,7 @@
     "https://www.segye.com/newsView/20260817512045",
     "https://www.segye.com/newsView/20260817513658",
     "https://www.segye.com/newsView/20260817513776",
+    "https://www.segye.com/newsView/20260901517489",
     "https://www.sejungilbo.com/news/articleView.html?idxno=59787",
     "https://www.sentv.co.kr/article/view/sentv202605090003",
     "https://www.sentv.co.kr/article/view/sentv202605150052",
@@ -3002,9 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260830192729"
   ],
   "titles": [
-    "전과·체납 후보 수두룩 교육감 후보 깜깜이 선거에 갇힌 아이의 미",
-    "전국 119시민수상구조대 연장 운영 늦더위 안전 물놀이",
-    "전국 곳곳 폭우 피해 정부·정치권 피해 최소화 위해 총력 대응 종합",
     "전국 곳곳 화재 용인 3명 부상·대구 1명 사망",
     "전국 공장·창고 화재안전 조사 첫 실시 안전투자 인센티브 확대",
     "전국 덮친 강풍·폭우에 구조 작업 이어지고 시설 피해 속출",
@@ -3909,6 +3906,7 @@
     "진실 묻힐 뻔 부산 돌려차기 피해자 검찰 보완수사 폐지 직격",
     "진정자의 아시아의 영성 spiritual asia ㉛ 시크교 이야기 ai 시대가",
     "진정자의 이란전쟁 이야기 진리·정의·자유 미국과 이란의 휴전협",
+    "진주시 주도 ai통합데이터센터 구축 필요",
     "진짜 고비는 연말·내년 초 넘치는 유동성 부동산 역류 경계",
     "진짜 과학일까 탐욕일까 실리콘밸리 거물들의 기술 유토피아",
     "진천군 jtx 조기추진 국회·정부와 협력",
@@ -4166,6 +4164,7 @@
     "충남 교육 청 제20회 전국장애학생체육대회 종합 3위 쾌거",
     "충남 당진경찰서 어르신 교통안전교육으로 교통 사고 사전 예방에 나서",
     "충남 당진서 suv 전복 후 화재 사고 1명 사망",
+    "충남 메가 프로젝트 현실로 대전은 연구소만 바라보기",
     "충남 아산 국도서 화물차 등 5중 연쇄 추돌 사고 1명 사망·2명 부상",
     "충남 정책브리핑 지방선거 앞두고 불법 정당 현수막 단속 강화",
     "충남·대전·충북 정치권 초당적 공조 핵심 철도 6개 사업 공동 건의",
@@ -4608,6 +4607,7 @@
     "트럼프 北김정은에 무릎 꿇었다 한미 연합훈련 축소에 미국도",
     "트럼프 對이란전략 경제 실패하게 두거나 강력 타격 주",
     "트럼프 李대통령 이란전 지원 요청에 사양하겠다 한국 보호해 주",
+    "트럼프 美 금리 너무 높다 연준 케빈 워시 향해 재차 인하 압박",
     "트럼프 美 금리 인위적으로 높아 연준 내려야",
     "트럼프 美 베네수 원유 과반 통제권 확보 휘발유값 낮아질 것",
     "트럼프 美중부사령관 건의에 공습 중단 이란 대화 재개 선그어",
