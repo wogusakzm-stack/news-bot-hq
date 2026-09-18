@@ -1,7 +1,5 @@
 {
   "urls": [
-    "https://www.nocutnews.co.kr/news/6572009",
-    "https://www.nocutnews.co.kr/news/6572414",
     "https://www.nocutnews.co.kr/news/6572436",
     "https://www.nocutnews.co.kr/news/6572459",
     "https://www.nocutnews.co.kr/news/6572924",
@@ -263,6 +261,7 @@
     "https://www.polinews.co.kr/news/articleView.html?idxno=742698",
     "https://www.polinews.co.kr/news/articleView.html?idxno=742911",
     "https://www.polinews.co.kr/news/articleView.html?idxno=743459",
+    "https://www.polinews.co.kr/news/articleView.html?idxno=743570",
     "https://www.ppss.kr/news/articleView.html?idxno=298775",
     "https://www.ppss.kr/news/articleView.html?idxno=299150",
     "https://www.ppss.kr/news/articleView.html?idxno=299388",
@@ -286,6 +285,7 @@
     "https://www.ppss.kr/news/articleView.html?idxno=310143",
     "https://www.ppss.kr/news/articleView.html?idxno=310232",
     "https://www.ppss.kr/news/articleView.html?idxno=310344",
+    "https://www.ppss.kr/news/articleView.html?idxno=311581",
     "https://www.pressian.com/pages/articles/2026050914240167216",
     "https://www.pressian.com/pages/articles/2026051617050711482",
     "https://www.pressian.com/pages/articles/2026052219052239776",
@@ -3002,9 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260915113843"
   ],
   "titles": [
-    "제주 실종 사건 허위종결 경찰관 구속기로 오늘 영장심사",
-    "제주 실종 추정 피해자 104일만에 발견 허위종결 경찰은 석방",
-    "제주 실종 파장에 쏟아지는 경찰 대책 실효성은",
     "제주 지방선거 후보 등록 첫날 도지사 3명·교육감 3명 등록 완료",
     "제주 지방선거·보궐선거 후보 등록 시작 민주당 초반 기선잡기",
     "제주 평화로서 렌터카 단독 사고 후 화재 관광객 4명 부상",
@@ -3345,6 +3342,7 @@
     "중국 유럽이 무역 장벽 높이면 맞대응 경고",
     "중국 일본 패전 81주년 맞아 재군사화 맹비난",
     "중국 전기차 공세에 정부 지원 절실 한목소리",
+    "중국 전기차 파상공세 8 관세만으론 못 막는다",
     "중국 제조업 둔화 수출 버팀목도 흔들리며 경기 둔화 신호 강화",
     "중국 조사선 대만 제한수역 진입 대만 퇴거 조치",
     "중국 주일 미군기지·미 항모 모형 만들어 대만 침공 훈련",
@@ -3477,6 +3475,7 @@
     "중소기업 중대재해 예방 안전체계 구축 교육",
     "중수청 가겠다던 검사·수사관 중 615명 지원 철회",
     "중수청 후보추천위 구성 일주일간 청장 후보 추천받는다",
+    "중수청에 마약수사 전담조직 신설 마약범죄 수사 협업체계 강화",
     "중수청장 국회 인사청문 포함 운영위서 의결",
     "중수청장 인사 청문회 법 국회 본회의 통과",
     "중수청장 인사 청문회 법 법사위 통과 여야 檢수사권 공방",
@@ -3897,6 +3896,7 @@
     "최연소 부산시장 후보의 몰락 음료컵 테러 의혹 결국 구속",
     "최우방도 봐주지 않는다 트럼프 캐나다에 50 관세 강행",
     "최웅식 필두 국힘 영등포 구청장·시·구의원 후보군 윤곽 6·3 지방선거",
+    "최윤범 고려아연 회장 추락사 노동자 나 몰라라 다음날 한경협",
     "최은석 응급의료종사자 처우개선·기금 확충 법안 발의",
     "최저임금 달라는 보호감호자 법원 근로계약 아닌 교정처우",
     "최정규 감독 동궁 세트장 화재 큰 사고 였는데 인명 피해 없어 다행",
