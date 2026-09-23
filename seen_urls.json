@@ -1,9 +1,5 @@
 {
   "urls": [
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1528300",
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1528302",
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1528416",
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1528545",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1528557",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1528679",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1528680",
@@ -950,6 +946,7 @@
     "https://www.smarttoday.co.kr/ko-kr/articles/109416",
     "https://www.smarttoday.co.kr/ko-kr/articles/109983",
     "https://www.socialvalue.kr/news/view/1065572526779385",
+    "https://www.socialvalue.kr/news/view/1065580772826106",
     "https://www.sommeliertimes.com/news/articleView.html?idxno=131239",
     "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553195513",
     "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553201243",
@@ -1880,6 +1877,7 @@
     "https://www.wikitree.co.kr/articles/1159507",
     "https://www.wikitree.co.kr/articles/1160179",
     "https://www.wikitree.co.kr/articles/1161166",
+    "https://www.wikitree.co.kr/articles/1161602",
     "https://www.wolyo.co.kr/news/articleView.html?idxno=312888",
     "https://www.wolyo.co.kr/news/articleView.html?idxno=313127",
     "https://www.wolyo.co.kr/news/articleView.html?idxno=313592",
@@ -2375,6 +2373,7 @@
     "https://www.yna.co.kr/view/AKR20260922095100797",
     "https://www.yna.co.kr/view/AKR20260923001500071",
     "https://www.yna.co.kr/view/AKR20260923008900109",
+    "https://www.yna.co.kr/view/AKR20260923089200009",
     "https://www.yna.co.kr/view/GYH20260616000200044",
     "https://www.yna.co.kr/view/GYH20260630001000044",
     "https://www.yna.co.kr/view/PYH20260513024700013",
@@ -2862,6 +2861,7 @@
     "https://www.ytn.co.kr/_ln/0104_202609200252015524",
     "https://www.ytn.co.kr/_ln/0104_202609200450589278",
     "https://www.ytn.co.kr/_ln/0104_202609220605207502",
+    "https://www.ytn.co.kr/_ln/0104_202609231140419719",
     "https://www.ytn.co.kr/_ln/0105_202606070216057242",
     "https://www.ytn.co.kr/_ln/0105_202608130232234683",
     "https://www.ytn.co.kr/_ln/0105_202609201903100491",
@@ -3002,7 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260915113843"
   ],
   "titles": [
-    "조갑제 보완수사권 폐지는 법치파괴 법안 총선· 대선 서 국힘이 이긴",
     "조경태 윤리위 징계 수용 총선 출마 불가",
     "조계원 의원 통합특별시당 위원장 출마 민주당 주인인 당원 만들 것",
     "조계원 이재명 정부 성공·전남광주 대도약 이끌 것",
@@ -3686,6 +3685,7 @@
     "채권시장 심리 소폭 개선 응답자 66 7월 기준금리 인상 전망",
     "채권왕 건들락 美 금리 더 오를 것 시장 충돌 경로 진입",
     "채권운용·분석가 66 16일 금통위 금리 인상할 듯",
+    "채권자 죽자 입 싹 닦은 2억대 사기 피의자 검찰 보완수사로 구속",
     "채권혼합 etf 대표는 우리 rise 삼성전자sk하이닉스채권혼합50 etf 순",
     "채무 7조원 공방 시작됐다 경기도의회 여야 재정 해법 격돌",
     "채상병 순직 3주기 첫 구속영장 기각 특검 수사 고비",
