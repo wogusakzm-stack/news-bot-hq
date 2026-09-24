@@ -1,8 +1,5 @@
 {
   "urls": [
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1534879",
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1534884",
-    "https://www.obsnews.co.kr/news/articleView.html?idxno=1535258",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1535487",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1535729",
     "https://www.obsnews.co.kr/news/articleView.html?idxno=1535908",
@@ -1039,6 +1036,7 @@
     "https://www.the-today.com/news/articleView.html?idxno=90186",
     "https://www.the-today.com/news/articleView.html?idxno=90395",
     "https://www.the-today.com/news/articleView.html?idxno=90713",
+    "https://www.the-today.com/news/articleView.html?idxno=90718",
     "https://www.thebell.co.kr/free/content/ArticleView.asp",
     "https://www.thebigdata.co.kr/view.php",
     "https://www.thebilliards.kr/news/articleView.html?idxno=31705",
@@ -2361,6 +2359,7 @@
     "https://www.yna.co.kr/view/AKR20260921150500030",
     "https://www.yna.co.kr/view/AKR20260922002200071",
     "https://www.yna.co.kr/view/AKR20260922095100797",
+    "https://www.yna.co.kr/view/AKR20260922198300001",
     "https://www.yna.co.kr/view/AKR20260923001500071",
     "https://www.yna.co.kr/view/AKR20260923008900109",
     "https://www.yna.co.kr/view/AKR20260923071551063",
@@ -2537,6 +2536,7 @@
     "https://www.ytn.co.kr/_ln/0101_202609201121259155",
     "https://www.ytn.co.kr/_ln/0101_202609231819329029",
     "https://www.ytn.co.kr/_ln/0101_202609242328103450",
+    "https://www.ytn.co.kr/_ln/0101_202609250508130864",
     "https://www.ytn.co.kr/_ln/0102_202605092323136522",
     "https://www.ytn.co.kr/_ln/0102_202605120205355641",
     "https://www.ytn.co.kr/_ln/0102_202605120909380217",
@@ -3002,8 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260924095207"
   ],
   "titles": [
-    "조국혁신당 이 대통령 인요한 적십자 회장 인준 거부 검토해야",
-    "조국혁신당 조국 죽이기가 민주당 목표냐 진짜 범민주 후보 선택해야",
     "조국혁신당 한찬식 민정수석 임명에 검찰개혁 걸림돌 우려 표명",
     "조국혁신당만 빼고 김민석 범여권 정당 모아 오찬",
     "조기 17 ·망고 13 고유가·고 환율 에 먹거리 물가 급등",
@@ -4721,6 +4719,7 @@
     "트럼프·교황 앞세워 대북 접근 李의 승부수",
     "트럼프·네타냐후 호기롭게 전쟁 시작했지만 이란 정권 바꾸려다 자",
     "트럼프·바이든 시대에 급증한 美 정치권 욕설 최근 10년간 대통령 욕",
+    "트럼프·시진핑 10년 만의 백악관 회담 무역 휴전 2개월 연장",
     "트럼프·시진핑 24일 백악관서 ai·관세 담판 美 빅테크 총출동",
     "트럼프·시진핑 24일 회담 관세 휴전 연장 논의",
     "트럼프·시진핑 9월 회담 시동 정상회담 준비 착수",
@@ -5514,6 +5513,7 @@
     "합천 묘산면 광산마을 금융범죄 예방·스마트폰 활용 지원 교육",
     "합천경찰서 유치원 어린이 맞춤형 교통안전교육",
     "합천군 자원봉사센터 경남 기후재난 취약이웃 돌봄 네트워크 가동",
+    "핫이슈 美 첨단 칩 vs 中 전력·인재 ai 패권 반도체 너머로 번졌다",
     "핫이슈 이 대통령 인사참사 후폭풍 성남-경기라인 핵심 김현지 경",
     "항공사만 고용유지 지원 완화 관광업계 정부와 추가 논의",
     "항공업계 정비도 생성형 ai 시대 대한항공 정비결함 분석 시스템 오픈",
