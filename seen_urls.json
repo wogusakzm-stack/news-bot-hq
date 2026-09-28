@@ -1,7 +1,5 @@
 {
   "urls": [
-    "https://www.pinpointnews.co.kr/news/articleView.html?idxno=479422",
-    "https://www.pinpointnews.co.kr/news/articleView.html?idxno=480193",
     "https://www.pinpointnews.co.kr/news/articleView.html?idxno=480662",
     "https://www.pinpointnews.co.kr/news/articleView.html?idxno=481655",
     "https://www.pinpointnews.co.kr/news/articleView.html?idxno=484229",
@@ -2354,6 +2352,8 @@
     "https://www.yna.co.kr/view/AKR20260928003200087",
     "https://www.yna.co.kr/view/AKR20260928003400071",
     "https://www.yna.co.kr/view/AKR20260928003600072",
+    "https://www.yna.co.kr/view/AKR20260928073800001",
+    "https://www.yna.co.kr/view/AKR20260928078800009",
     "https://www.yna.co.kr/view/GYH20260616000200044",
     "https://www.yna.co.kr/view/GYH20260630001000044",
     "https://www.yna.co.kr/view/PYH20260513024700013",
@@ -3002,9 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260924095207"
   ],
   "titles": [
-    "종전 우려는 기회 k-방산 유럽·중동 넘어 무기 수출 뉴 스탠더",
-    "종전 코앞 美-이란 호르무즈 통제권·동결자산 해제 막판 수싸움",
-    "종전 합의 소식에 매수 사이드카 환율·국제 유가 급락",
     "종전 합의 연준 올해 금리 인상 가능성도 50 밑으로 뚝",
     "종전 합의 종전에 위험자산 랠리 채권·환율은 물가가 변수",
     "종전 합의에 환율 장중 1504원까지 하락 당분간 1500원 안팎 오르내릴",
@@ -3822,6 +3819,7 @@
     "추석 앞둔 수영경찰 독거노인·여성 1인 가구 찾아간다",
     "추석 연휴 의료 공백 제로 경북도 24시간 촘촘한 응급안전망 구축",
     "추석 연휴 첫날 사망 사고·대형 화재 잇따라",
+    "추석민심 살핀 여야 與 조희대 질타·野 대통령과 헤어질 결심",
     "추억회상 트럼프 sns에 김정은과 북미정상회담 사진 올려",
     "추적기 끈 美제재 선박 中항구로 중러 북극항로 새 교역축으로",
     "추풍령휴게소서 119구조대 버스 나무 충돌 11명 부상",
@@ -5611,6 +5609,8 @@
     "현대로템 항공 우주 에 현대차 ai 이식 안전사고 없이 품질 극대",
     "현대로템 항공우주 생산현장에 현대차 스마트팩토리 도입 안전성 강",
     "현대무벡스 지수 급락세 하락 미국·이란 휴전 변수 차익매물 압박",
+    "현대엔지니어링 8700억원 규모 군산 ai 데이터센터 수주",
+    "현대엔지니어링 군산 ai 데이터센터 사업 수주 10월 착공",
     "현대연구원 미국 적정금리 4 대 넘을 것 충격 대비해야",
     "현대자동차그룹 엔비디아와 로봇 레퍼런스 플랫폼 공동 구축",
     "현대제철 유럽 고객사 초청 자동차강판·탄소저감 기술력 알렸다",
