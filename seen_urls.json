@@ -1,9 +1,5 @@
 {
   "urls": [
-    "https://www.pointdaily.co.kr/news/articleView.html?idxno=307993",
-    "https://www.pointdaily.co.kr/news/articleView.html?idxno=308091",
-    "https://www.pointdaily.co.kr/news/articleView.html?idxno=308232",
-    "https://www.pointdaily.co.kr/news/articleView.html?idxno=308939",
     "https://www.pointdaily.co.kr/news/articleView.html?idxno=309522",
     "https://www.pointdaily.co.kr/news/articleView.html?idxno=310706",
     "https://www.pointdaily.co.kr/news/articleView.html?idxno=310715",
@@ -159,6 +155,7 @@
     "https://www.pressian.com/pages/articles/2026091616470753335",
     "https://www.pressian.com/pages/articles/2026091718571141032",
     "https://www.pressian.com/pages/articles/2026092117284929109",
+    "https://www.pressian.com/pages/articles/2026093014192308587",
     "https://www.pressman.kr/news/articleView.html?idxno=101756",
     "https://www.pressman.kr/news/articleView.html?idxno=102073",
     "https://www.prnewswire.co.uk/news-releases/corrata-reimagines-mobile-device-security-for-the-ai-era-302785866.html",
@@ -1223,6 +1220,7 @@
     "https://www.tokenpost.kr/news/ai/409849",
     "https://www.tokenpost.kr/news/ai/411594",
     "https://www.tokenpost.kr/news/ai/415995",
+    "https://www.tokenpost.kr/news/ai/416465",
     "https://www.tokenpost.kr/news/breaking/356744",
     "https://www.tokenpost.kr/news/breaking/356999",
     "https://www.tokenpost.kr/news/breaking/357289",
@@ -1422,6 +1420,7 @@
     "https://www.tokenpost.kr/news/economy/407288",
     "https://www.tokenpost.kr/news/economy/410855",
     "https://www.tokenpost.kr/news/economy/411588",
+    "https://www.tokenpost.kr/news/economy/416413",
     "https://www.tokenpost.kr/news/insights/374861",
     "https://www.tokenpost.kr/news/insights/382648",
     "https://www.tokenpost.kr/news/international/358989",
@@ -2349,6 +2348,7 @@
     "https://www.yna.co.kr/view/AKR20260930001800108",
     "https://www.yna.co.kr/view/AKR20260930001900099",
     "https://www.yna.co.kr/view/AKR20260930007500071",
+    "https://www.yna.co.kr/view/AKR20260930190000082",
     "https://www.yna.co.kr/view/GYH20260616000200044",
     "https://www.yna.co.kr/view/GYH20260630001000044",
     "https://www.yna.co.kr/view/PYH20260513024700013",
@@ -3002,7 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20260930064128"
   ],
   "titles": [
-    "종합특검 관저 이전 예산 전용 기획예산처 간부 피의자 소환",
     "종합특검 관저 이전 의혹 관련 이상민 전 장관 입건",
     "종합특검 구속영장 줄기각 수사기간 연장 안 되면 어떻게",
     "종합특검 김건희 수사 무마 의혹 이원석 전 검찰총장 소환 통",
@@ -4087,6 +4086,7 @@
     "코스피 반등 이끈 삼전·sk하닉 이번주 금리 쌍고비 증시 전망대",
     "코스피 발목 잡은 유가·금리 상승 fomc 이후 달라질까",
     "코스피 사상 첫 8 000 돌파 중동 협상 기대감으로 상승세 지속",
+    "코스피 사흘 연속 하락 미 국채금리 급등 부담",
     "코스피 사흘만에 반등하며 8400스 회복 코스닥은",
     "코스피 삼성전자 호실적에도 폭락 오늘 증시는",
     "코스피 삼전닉스 상승에 6 900선 회복 코스닥은 급락",
