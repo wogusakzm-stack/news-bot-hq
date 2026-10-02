@@ -1,12 +1,5 @@
 {
   "urls": [
-    "https://www.pointe.co.kr/news/articleView.html?idxno=80966",
-    "https://www.pointe.co.kr/news/articleView.html?idxno=81058",
-    "https://www.pointe.co.kr/news/articleView.html?idxno=81105",
-    "https://www.pointe.co.kr/news/articleView.html?idxno=81627",
-    "https://www.pointe.co.kr/news/articleView.html?idxno=82266",
-    "https://www.pointe.co.kr/news/articleView.html?idxno=82665",
-    "https://www.pointe.co.kr/news/articleView.html?idxno=82666",
     "https://www.pointe.co.kr/news/articleView.html?idxno=83576",
     "https://www.pointe.co.kr/news/articleView.html?idxno=83644",
     "https://www.pointe.co.kr/news/articleView.html?idxno=84504",
@@ -144,6 +137,7 @@
     "https://www.pressian.com/pages/articles/2026093014192308587",
     "https://www.pressman.kr/news/articleView.html?idxno=101756",
     "https://www.pressman.kr/news/articleView.html?idxno=102073",
+    "https://www.pressman.kr/news/articleView.html?idxno=103877",
     "https://www.prnewswire.co.uk/news-releases/corrata-reimagines-mobile-device-security-for-the-ai-era-302785866.html",
     "https://www.public25.com/news/articleView.html?idxno=47822",
     "https://www.public25.com/news/articleView.html?idxno=48923",
@@ -373,6 +367,7 @@
     "https://www.sedaily.com/article/20095279",
     "https://www.sedaily.com/article/20095766",
     "https://www.sedaily.com/article/20096800",
+    "https://www.sedaily.com/article/20097537",
     "https://www.segye.com/newsView/20260506515382",
     "https://www.segye.com/newsView/20260506515409",
     "https://www.segye.com/newsView/20260507514874",
@@ -1628,6 +1623,7 @@
     "https://www.veritas-a.com/news/articleView.html?idxno=608720",
     "https://www.veritas-a.com/news/articleView.html?idxno=609192",
     "https://www.veritas-a.com/news/articleView.html?idxno=618905",
+    "https://www.veritas-a.com/news/articleView.html?idxno=630410",
     "https://www.viewsnnews.com/article",
     "https://www.viva100.com/article/20260509500017",
     "https://www.viva100.com/article/20260516500120",
@@ -2347,6 +2343,8 @@
     "https://www.yna.co.kr/view/AKR20260930007500071",
     "https://www.yna.co.kr/view/AKR20260930190000082",
     "https://www.yna.co.kr/view/AKR20261001002000099",
+    "https://www.yna.co.kr/view/AKR20261002041951004",
+    "https://www.yna.co.kr/view/AKR20261002088700073",
     "https://www.yna.co.kr/view/GYH20260616000200044",
     "https://www.yna.co.kr/view/GYH20260630001000044",
     "https://www.yna.co.kr/view/PYH20260513024700013",
@@ -2918,6 +2916,7 @@
     "https://www.ziksir.com/news/articleView.html?idxno=142613",
     "https://www.ziksir.com/news/articleView.html?idxno=146307",
     "https://www.ziksir.com/news/articleView.html?idxno=146631",
+    "https://www.ziksir.com/news/articleView.html?idxno=148179",
     "https://ysmbc.co.kr/NewsArticle/1520196",
     "https://ysmbc.co.kr/NewsArticle/1522167",
     "https://ysmbc.co.kr/NewsArticle/1524769",
@@ -2999,7 +2998,8 @@
     "https://zdnet.co.kr/view/?no=20260915113503",
     "https://zdnet.co.kr/view/?no=20260915113843",
     "https://zdnet.co.kr/view/?no=20260924095207",
-    "https://zdnet.co.kr/view/?no=20260930064128"
+    "https://zdnet.co.kr/view/?no=20260930064128",
+    "https://zdnet.co.kr/view/?no=20261002122852"
   ],
   "titles": [
     "종합특검 오늘 윤석열 2차 소환 조사 반란죄 피의자 신분",
