@@ -1,8 +1,5 @@
 {
   "urls": [
-    "https://www.polinews.co.kr/news/articleView.html?idxno=739144",
-    "https://www.polinews.co.kr/news/articleView.html?idxno=739560",
-    "https://www.polinews.co.kr/news/articleView.html?idxno=739965",
     "https://www.polinews.co.kr/news/articleView.html?idxno=740483",
     "https://www.polinews.co.kr/news/articleView.html?idxno=740484",
     "https://www.polinews.co.kr/news/articleView.html?idxno=741942",
@@ -468,6 +465,7 @@
     "https://www.segye.com/newsView/20260930516740",
     "https://www.segye.com/newsView/20261001500492",
     "https://www.segye.com/newsView/20261002513134",
+    "https://www.segye.com/newsView/20261004506925",
     "https://www.sejungilbo.com/news/articleView.html?idxno=59787",
     "https://www.sentv.co.kr/article/view/sentv202605090003",
     "https://www.sentv.co.kr/article/view/sentv202605150052",
@@ -551,6 +549,7 @@
     "https://www.seoul.co.kr/news/international/2026/09/14/20260914014006",
     "https://www.seoul.co.kr/news/international/2026/09/14/20260914500112",
     "https://www.seoul.co.kr/news/international/2026/09/21/20260921012002",
+    "https://www.seoul.co.kr/news/international/2026/10/04/20261004500079",
     "https://www.seoul.co.kr/news/international/USA-amrica/2026/07/30/20260730500061",
     "https://www.seoul.co.kr/news/international/USA-amrica/2026/09/07/20260907500111",
     "https://www.seoul.co.kr/news/international/USA-amrica/2026/09/10/20260910014004",
@@ -2853,6 +2852,7 @@
     "https://www.ytn.co.kr/_ln/0104_202610030624181153",
     "https://www.ytn.co.kr/_ln/0104_202610030638329816",
     "https://www.ytn.co.kr/_ln/0104_202610031848420552",
+    "https://www.ytn.co.kr/_ln/0104_202610042034179588",
     "https://www.ytn.co.kr/_ln/0105_202606070216057242",
     "https://www.ytn.co.kr/_ln/0105_202608130232234683",
     "https://www.ytn.co.kr/_ln/0105_202609201903100491",
@@ -3002,8 +3002,6 @@
     "https://zdnet.co.kr/view/?no=20261003220259"
   ],
   "titles": [
-    "주간 클라우드 동향/6월④ ai 데이터센터 전력 경쟁 아마존 선두 구",
-    "주간ai노트 오픈ai 애플 상대 소송 검토 챗gpt 통합 소극적",
     "주간보호센터 치매 환자 떡 먹다 질식사 센터장 불구속기소",
     "주간증시 코스피 한주간 1 50 이번 주는 상승 출발 기대감",
     "주간증시전망 8000선 다지는 코스피 엔비디아 컴퓨텍스와 6·3 지방선",
@@ -3265,6 +3263,7 @@
     "중동평화 정부대표 유엔 및 유럽연합 중동평화과정 관련 대표 화상 면",
     "중동평화 정부대표 유엔 중동특사 화상면담 종전 mou 등 논의",
     "중러 한반도 평화안정 유지해야 대북 제재 반대",
+    "중러 합동군사훈련 푸틴 참관 지상엔 로봇 병력은 여기에",
     "중러정상회담 시진핑·푸틴 만났다 美중심 탈피 글로벌 거버넌스",
     "중부노인 복지 관-범서적십자봉사회 취약노인 복지 증진 업무협약",
     "중부유럽 4개국 동부전선 국방비 부담 커 불법 이주도 대응",
@@ -4645,6 +4644,7 @@
     "트럼프 행정부 우크라에 방공무기 3 7조원치 판매 승인",
     "트럼프 행정부 유럽에 경유 비축분 방출 압박",
     "트럼프 행정부 중동 관련 캠프데이비드 극비 회의",
+    "트럼프 협박에 비축유 푸는 유럽 디젤 대란 불씨 여전 글로벌 리포",
     "트럼프 협상칩 발언에 친중 목소리 커지는 대만",
     "트럼프 호르무즈 곧 재개방 이란 통제권 부여 협상안 진통",
     "트럼프 호르무즈 기뢰 모두 제거 김정은에 또 러브콜",
