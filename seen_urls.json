@@ -1,9 +1,5 @@
 {
   "urls": [
-    "https://www.ppss.kr/news/articleView.html?idxno=308592",
-    "https://www.ppss.kr/news/articleView.html?idxno=309490",
-    "https://www.ppss.kr/news/articleView.html?idxno=309902",
-    "https://www.ppss.kr/news/articleView.html?idxno=310143",
     "https://www.ppss.kr/news/articleView.html?idxno=310232",
     "https://www.ppss.kr/news/articleView.html?idxno=310344",
     "https://www.ppss.kr/news/articleView.html?idxno=311581",
@@ -71,6 +67,7 @@
     "https://www.pressian.com/pages/articles/2026092117284929109",
     "https://www.pressian.com/pages/articles/2026093014192308587",
     "https://www.pressian.com/pages/articles/2026100520002997151",
+    "https://www.pressian.com/pages/articles/2026100609270982105",
     "https://www.pressman.kr/news/articleView.html?idxno=101756",
     "https://www.pressman.kr/news/articleView.html?idxno=102073",
     "https://www.pressman.kr/news/articleView.html?idxno=103877",
@@ -2327,6 +2324,7 @@
     "https://www.yna.co.kr/view/AKR20261005002100071",
     "https://www.yna.co.kr/view/AKR20261005029900001",
     "https://www.yna.co.kr/view/AKR20261005061000098",
+    "https://www.yna.co.kr/view/AKR20261006099100073",
     "https://www.yna.co.kr/view/GYH20260616000200044",
     "https://www.yna.co.kr/view/GYH20260630001000044",
     "https://www.yna.co.kr/view/PYH20260513024700013",
@@ -2999,11 +2997,11 @@
     "https://zdnet.co.kr/view/?no=20260930064128",
     "https://zdnet.co.kr/view/?no=20261002122852",
     "https://zdnet.co.kr/view/?no=20261002190003",
-    "https://zdnet.co.kr/view/?no=20261003220259"
+    "https://zdnet.co.kr/view/?no=20261003220259",
+    "https://zdnet.co.kr/view/?no=20261006122016",
+    "https://zdnet.co.kr/view/?no=20261006124748"
   ],
   "titles": [
-    "주간환율전망 국채금리·강달러 압박에 눌린 원화···1500원대 공방",
-    "주간환율전망 미·이란 종전합의 기대감···1500원대 숨고르기",
     "주거급여 받아도 고시원 lh 현장 발굴형 주거 복지 확대",
     "주거난 시위에 법안 부결까지 스페인 총리 내달 조기 총선 승부수",
     "주거용 오피스텔도 생애최초 취득세 감면 지방 세제 지원 강화",
@@ -4406,6 +4404,7 @@
     "트럼프 만류에도 이스라엘 레바논 수도 베이루트 공습",
     "트럼프 맏사위 네타냐후 만났지만 가자지구 평화안 공회전",
     "트럼프 말을 믿느니 46년만에 핵무기 금지조항 폐기한 이 나라",
+    "트럼프 면세 경유 도로 차량에 사용 허용 농촌 표심 잡기 안간힘",
     "트럼프 모즈타바 이란 협상에 관여 만나고 싶다",
     "트럼프 못 믿겠다 eu 가입 줄 서는 유럽",
     "트럼프 무의미한 살상 끝낼 러-우 평화협상 희망",
@@ -5221,6 +5220,7 @@
     "한국마사회 국가유공자 문화 복지 지원",
     "한국마사회 말산업 ai ·xr 스타트업 발굴 서울창조경제혁신센터와 오",
     "한국마사회 사회공헌재단 전태일 의료센터 건립기금 3천만원 전달",
+    "한국문화정보원 ai페스타서 인공지능 접목 문화 서비스 선봬 일상 속",
     "한국범죄학회 ai 수사 책임성과 의료정보 보안 논의 ai스페라 등 전문",
     "한국보건복지인재원 보건복지배움인 플랫폼 고도화 정식 서비스 개",
     "한국보험신문-연세대학교 국제학대학원 공동기획 ai 시대 미·중 기술",
